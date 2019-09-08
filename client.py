@@ -8,7 +8,7 @@ height = 500
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Soccer game")
 
-def redrawWindow(win, game, p1, p2):
+def redrawWindow(win, game):
 
     win.fill((255,255,255))
     if not (game.connected()):
@@ -16,8 +16,7 @@ def redrawWindow(win, game, p1, p2):
         text = font.render("Waiting for Player...", 1, (255, 0, 0), True)
         win.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
     else:
-        p1.draw(win)
-        p2.draw(win)
+        game.move(win)
     pygame.display.update()
 
 def main():
@@ -31,12 +30,7 @@ def main():
         clock.tick(60)
         game = None
         try:
-            game = n.send("g")
-            p2 = None
-            if p.number == 1:
-                p2 = game.getPlayer2()
-            else:
-                p2 = game.getPlayer1()
+            game = n.send(p)
         except:
             pass
 
@@ -47,7 +41,7 @@ def main():
 
         if(game.connected()):
             p.move()
-        redrawWindow(win, game, p, p2)
+        redrawWindow(win, game)
 
 
 

@@ -29,14 +29,18 @@ def threaded_client(conn, player, gameId):
     response = ""
 
     while True:
-        data = conn.recv(4096).decode()
-
+        data = pickle.loads(conn.recv(2048*2))
         if gameId in games:
             game = games[gameId]
 
             if not data:
                 break
             else:
+                if data.number == 1:
+                    game.p1 = data
+                else:
+                    game.p2 = data
+
                 print("Received: ", data)
                 print("Sending : ", game)
                 conn.send(pickle.dumps(game))
