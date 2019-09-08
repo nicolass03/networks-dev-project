@@ -1,13 +1,14 @@
 import pygame
 
-class Player():
+
+class Player:
     def __init__(self, x, y, width, height, color, number):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
-        self.rect = (x,y,width,height)
+        self.rect = (x, y, width, height)
         self.vel = 3
         self.online = False
         self.number = number
@@ -37,4 +38,3 @@ class Player():
 
     def update(self):
         self.rect = (self.x, self.y, self.width, self.height)
-

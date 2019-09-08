@@ -22,6 +22,7 @@ connected = set()
 games = {}
 idCounter = 0
 
+
 def threaded_client(conn, player, gameId):
     global idCount
     conn.send(pickle.dumps(player))
@@ -29,7 +30,7 @@ def threaded_client(conn, player, gameId):
     response = ""
 
     while True:
-        data = pickle.loads(conn.recv(2048*2))
+        data = pickle.loads(conn.recv(2048 * 2))
         if gameId in games:
             game = games[gameId]
 
@@ -47,22 +48,23 @@ def threaded_client(conn, player, gameId):
         else:
             break
 
+
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
 
-    idCounter+=1
-    gameId = (idCounter-1)//2
+    idCounter += 1
+    gameId = (idCounter - 1) // 2
     player = None
-    if idCounter % 2 == 1 :
+    if idCounter % 2 == 1:
         games[gameId] = Game(gameId)
         print("New game created...")
-        player = Player(0, 0, 50, 50,(0,0,255), 1)
+        player = Player(0, 0, 50, 50, (0, 0, 255), 1)
         games[gameId].p1 = player
         p = 1
     else:
         games[gameId].ready = True
-        player = Player(100, 100, 50, 50,(0,255,0), 2)
+        player = Player(100, 100, 50, 50, (0, 255, 0), 2)
         games[gameId].p2 = player
         p = 2
 

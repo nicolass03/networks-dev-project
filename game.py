@@ -1,7 +1,7 @@
 class Game:
-
     p1 = None
     p2 = None
+
     def __init__(self, id):
         self.ready = False
         self.id = id

@@ -1,0 +1,3 @@
+pip install pyinstaller
+ir al directorio del proyecto
+pyinstaller -F *nombredelarchivo*
