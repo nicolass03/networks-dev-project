@@ -1,7 +1,7 @@
 import pygame
 
 class Player():
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, width, height, color, number):
         self.x = x
         self.y = y
         self.width = width
@@ -9,9 +9,14 @@ class Player():
         self.color = color
         self.rect = (x,y,width,height)
         self.vel = 3
+        self.online = False
+        self.number = number
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)
+
+    def getStatus(self):
+        return self.online
 
     def move(self):
         keys = pygame.key.get_pressed()
