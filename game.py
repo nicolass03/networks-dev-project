@@ -1,6 +1,7 @@
 class Game:
     p1 = None
     p2 = None
+    ball = None
 
     def __init__(self, id):
         self.ready = False
@@ -16,9 +17,13 @@ class Game:
     def getPlayer2(self):
         return self.p2
 
+    def getBall(self):
+        return self.ball
+
     def bothOnline(self):
         return self.p1Online and self.p2Online
 
     def move(self, win):
         self.p1.draw(win)
         self.p2.draw(win)
+        self.ball.draw(win)

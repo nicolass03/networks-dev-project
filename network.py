@@ -8,10 +8,15 @@ class Network:
         self.server = socket.gethostbyname(socket.getfqdn())
         self.port = 5555
         self.addr = (self.server, self.port)
-        self.p = self.connect()
+        self.data = self.connect()
+        self.p = self.data[0]
+        self.b = self.data[1]
 
     def getP(self):
         return self.p
+
+    def getB(self):
+        return self.b
 
     def connect(self):
         try:

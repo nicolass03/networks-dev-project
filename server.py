@@ -2,6 +2,7 @@ import socket
 from _thread import *
 from game import Game
 from player import Player
+from ball import Ball
 import pickle
 import sys
 
@@ -23,7 +24,7 @@ games = {}
 idCounter = 0
 
 
-def threaded_client(conn, player, gameId):
+def threaded_client(conn, player, ball, gameId):
     global idCount
     conn.send(pickle.dumps(player))
 
@@ -37,10 +38,11 @@ def threaded_client(conn, player, gameId):
             if not data:
                 break
             else:
-                if data.number == 1:
-                    game.p1 = data
+                if data[0].number == 1:
+                    game.p1 = data[0]
                 else:
-                    game.p2 = data
+                    game.p2 = data[0]
+                game.ball = data[1]
 
                 print("Received: ", data)
                 print("Sending : ", game)
@@ -49,23 +51,27 @@ def threaded_client(conn, player, gameId):
             break
 
 
+ball = None
+
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
-
     idCounter += 1
     gameId = (idCounter - 1) // 2
     player = None
+
     if idCounter % 2 == 1:
         games[gameId] = Game(gameId)
         print("New game created...")
-        player = Player(0, 0, 50, 50, (0, 0, 255), 1)
+        player = Player(225, 0, 50, 50, (0, 0, 255), 1, 500, 500)
+        ball = Ball(250, 250, 20, (0, 0, 255), 500, 500)
         games[gameId].p1 = player
+        games[gameId].ball = ball
         p = 1
     else:
         games[gameId].ready = True
-        player = Player(100, 100, 50, 50, (0, 255, 0), 2)
+        player = Player(225, 450, 50, 50, (0, 255, 0), 2, 500, 500)
         games[gameId].p2 = player
         p = 2
 
-    start_new_thread(threaded_client, (conn, player, gameId))
+    start_new_thread(threaded_client, (conn, player, ball, gameId))

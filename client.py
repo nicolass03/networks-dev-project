@@ -1,6 +1,8 @@
 import pygame
 from network import Network
 from player import Player
+
+
 pygame.font.init()
 
 width = 500
@@ -13,7 +15,7 @@ def redrawWindow(window, game):
     window.fill((255, 255, 255))
     if not (game.connected()):
         font = pygame.font.SysFont("comicsans", 60)
-        text = font.render("Waiting for Player...", 1, (255, 255, 255), True)
+        text = font.render("Waiting for Player...", 1, (0, 0, 0), True)
         window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
     else:
         game.move(window)
@@ -24,13 +26,14 @@ def main():
     run = True
     n = Network()
     p = n.getP()
+    b = n.getB()
     clock = pygame.time.Clock()
 
     while run:
         clock.tick(60)
         game = None
         try:
-            game = n.send(p)
+            game = n.send((p, b))
         except:
             break
 
@@ -41,6 +44,8 @@ def main():
 
         if game.connected():
             p.move()
+            b.move()
+
         redrawWindow(win, game)
 
 
