@@ -7,6 +7,7 @@ class Player:
         self.y = y
         self.width = width
         self.height = height
+        self.radius = width / 2
         self.color = color
         self.rect = (x, y, width, height)
         self.vel = 3

@@ -45,6 +45,8 @@ def main():
         if game.connected():
             p.move()
             b.move()
+        #if pygame.sprite.collide_circle(p, b):
+         #   pygame.quit()
 
         redrawWindow(win, game)
 

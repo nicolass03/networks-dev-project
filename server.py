@@ -26,7 +26,7 @@ idCounter = 0
 
 def threaded_client(conn, player, ball, gameId):
     global idCount
-    conn.send(pickle.dumps(player))
+    conn.send(pickle.dumps([player, ball]))
 
     response = ""
 
@@ -40,9 +40,9 @@ def threaded_client(conn, player, ball, gameId):
             else:
                 if data[0].number == 1:
                     game.p1 = data[0]
+                    game.ball = data[1]
                 else:
                     game.p2 = data[0]
-                game.ball = data[1]
 
                 print("Received: ", data)
                 print("Sending : ", game)

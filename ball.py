@@ -19,7 +19,7 @@ class Ball:
         return self.online
 
     def move(self):
-        power = 100
+        power = 1
         acceleration = power
         keys = pygame.key.get_pressed()
         #for acceleration in reversed(range(power)):
