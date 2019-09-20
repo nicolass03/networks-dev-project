@@ -5,6 +5,7 @@ from player import Player
 from ball import Ball
 import pickle
 import sys
+from network import StartData, GameData
 
 server = socket.gethostbyname(socket.getfqdn())
 port = 5555
@@ -24,9 +25,9 @@ games = {}
 idCounter = 0
 
 
-def threaded_client(conn, player, ball, gameId):
+def threaded_client(conn, startData, gameId):
     global idCount
-    conn.send(pickle.dumps([player, ball]))
+    conn.send(pickle.dumps(startData))
 
     response = ""
 
@@ -38,11 +39,11 @@ def threaded_client(conn, player, ball, gameId):
             if not data:
                 break
             else:
-                if data[0].number == 1:
-                    game.p1 = data[0]
-                    game.ball = data[1]
+                if data.number == 1:
+                    game.p1 = data.player_pos
+                    game.ball = data.ball
                 else:
-                    game.p2 = data[0]
+                    game.p2 = data.player_pos
 
                 print("Received: ", data)
                 print("Sending : ", game)
@@ -58,20 +59,20 @@ while True:
     print("Connected to:", addr)
     idCounter += 1
     gameId = (idCounter - 1) // 2
-    player = None
+    player_pos1 = (225, 0)
+    player_pos2 = (225, 450)
 
     if idCounter % 2 == 1:
         games[gameId] = Game(gameId)
         print("New game created...")
-        player = Player(225, 0, 50, 50, (0, 0, 255), 1, 500, 500)
         ball = Ball(250, 250, 20, (0, 0, 255), 500, 500)
-        games[gameId].p1 = player
+        games[gameId].p1 = player_pos1
         games[gameId].ball = ball
         p = 1
+        start_new_thread(threaded_client, (conn, StartData(player_pos1, player_pos2, 1, ball), gameId))
     else:
         games[gameId].ready = True
-        player = Player(225, 450, 50, 50, (0, 255, 0), 2, 500, 500)
-        games[gameId].p2 = player
+        games[gameId].p2 = player_pos2
         p = 2
+        start_new_thread(threaded_client, (conn, StartData(player_pos2, player_pos1, 2, ball), gameId))
 
-    start_new_thread(threaded_client, (conn, player, ball, gameId))

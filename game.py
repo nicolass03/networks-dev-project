@@ -11,10 +11,10 @@ class Game:
     def connected(self):
         return self.ready
 
-    def getPlayer1(self):
+    def getPos1(self):
         return self.p1
 
-    def getPlayer2(self):
+    def getPos2(self):
         return self.p2
 
     def getBall(self):

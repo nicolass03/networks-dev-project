@@ -1,5 +1,7 @@
 import pygame
 
+import os
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color, number, display_height, display_width):
@@ -16,12 +18,18 @@ class Player(pygame.sprite.Sprite):
         self.number = number
         self.display_height = display_height
         self.display_width = display_width
+        self.image = pygame.image.load("sprites/" + ("opponent", "player") [number > 0] + ".png")
+        self.mask = pygame.mask.from_surface(self.image)
 
     def draw(self, win):
-        pygame.draw.rect(win, self.color, self.rect)
+        win.blit(self.image, self.rect)
 
     def getStatus(self):
         return self.online
+
+    def setPos(self, pos):
+        self.x = pos[0]
+        self.y = pos[1]
 
     def move(self):
         keys = pygame.key.get_pressed()
@@ -45,4 +53,4 @@ class Player(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
-        self.rect = (self.x, self.y, self.width, self.height)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)

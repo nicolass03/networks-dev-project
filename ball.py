@@ -6,9 +6,9 @@ class Ball(pygame.sprite.Sprite):
         super().__init__()
         self.x = x
         self.y = y
+        self.radius = radius
         self.rect = pygame.Rect(self.x, self.y, self.radius, self.radius)
         self.center = (self.x, self.y)
-        self.radius = radius
         self.color = color
         self.online = False
         self.display_height = display_height
@@ -21,7 +21,7 @@ class Ball(pygame.sprite.Sprite):
         return self.online
 
     def move(self):
-        power = 1
+        power = 3
         acceleration = power
         keys = pygame.key.get_pressed()
         #for acceleration in reversed(range(power)):
@@ -39,4 +39,5 @@ class Ball(pygame.sprite.Sprite):
 
     def update(self):
         self.center = (self.x, self.y)
+        self.rect = pygame.Rect(self.x, self.y, self.radius, self.radius)
 
