@@ -1,10 +1,12 @@
 import pygame
 
 
-class Ball:
+class Ball(pygame.sprite.Sprite):
     def __init__(self, x, y, radius, color, display_height, display_width):
+        super().__init__()
         self.x = x
         self.y = y
+        self.rect = pygame.Rect(self.x, self.y, self.radius, self.radius)
         self.center = (self.x, self.y)
         self.radius = radius
         self.color = color

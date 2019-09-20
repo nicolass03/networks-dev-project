@@ -1,15 +1,16 @@
 import pygame
 
 
-class Player:
+class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color, number, display_height, display_width):
+        super().__init__()
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.radius = width / 2
         self.color = color
-        self.rect = (x, y, width, height)
+        self.rect = pygame.Rect(x, y, width, height)
         self.vel = 3
         self.online = False
         self.number = number
