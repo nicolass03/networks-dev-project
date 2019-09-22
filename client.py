@@ -4,20 +4,31 @@ from player import Player
 
 
 pygame.font.init()
+pygame.mixer.init()
 
-width = 500
+width = 690
 height = 500
+ground = pygame.image.load("Images/ground.jpg")
+scoreboard = pygame.image.load("Images/scoreBoard.jpg")
+
+
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Soccer game")
 
 
+
 def redrawWindow(window,game,  p1, p2, ball):
+
     window.fill((255, 255, 255))
     if not (game.connected()):
         font = pygame.font.SysFont("comicsans", 60)
         text = font.render("Waiting for Player...", 1, (0, 0, 0), True)
         window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
+
+
     else:
+        window.blit(ground,(15,50))
+        window.blit(scoreboard, (300,0))
         p1.draw(window)
         p2.update()
         p2.draw(window)
@@ -26,12 +37,14 @@ def redrawWindow(window,game,  p1, p2, ball):
     pygame.display.update()
 
 
+
+
 def main():
     run = True
     n = Network()
     start_info = n.getStartInfo()
-    p1 = Player(start_info.player_pos1[0], start_info.player_pos1[1], 50, 50, (0, 0, 255), start_info.number, 500, 500)
-    p2 = Player(start_info.player_pos2[0], start_info.player_pos2[1], 50, 50, (0, 255, 0), 0, 500, 500)
+    p1 = Player(start_info.player_pos1[0], start_info.player_pos1[1], 50, 100, (0, 0, 255), start_info.number, 500, 500)
+    p2 = Player(start_info.player_pos2[0], start_info.player_pos2[1], 50, 100, (0, 255, 0), 0, 500, 500)
     b = n.getB()
     clock = pygame.time.Clock()
 
