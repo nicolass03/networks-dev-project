@@ -5,7 +5,6 @@ from player import Player
 from ball import Ball
 import pickle
 import sys
-from network import StartData, GameData
 
 server = socket.gethostbyname(socket.getfqdn())
 port = 5555
@@ -25,9 +24,9 @@ games = {}
 idCounter = 0
 
 
-def threaded_client(conn, startData, gameId):
+def threaded_client(conn, player, gameId):
     global idCount
-    conn.send(pickle.dumps(startData))
+    conn.send(pickle.dumps(player))
 
     response = ""
 
@@ -39,12 +38,17 @@ def threaded_client(conn, startData, gameId):
             if not data:
                 break
             else:
-                if data.number == 1:
-                    game.p1 = data.player_pos
-                    game.ball = data.ball
+                if type(data) == Player:
+                    if data.number == 1:
+                        game.setPlayer1(data)
+                    else:
+                        game.setPlayer2(data)
                 else:
-                    game.p2 = data.player_pos
-
+                    if data[0].number == 1:
+                        game.setPlayer1(data[0])
+                    else:
+                        game.setPlayer2(data[0])
+                    game.setBall(data[1])
                 print("Received: ", data)
                 print("Sending : ", game)
                 conn.send(pickle.dumps(game))
@@ -52,27 +56,27 @@ def threaded_client(conn, startData, gameId):
             break
 
 
-ball = None
-
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
+
     idCounter += 1
     gameId = (idCounter - 1) // 2
-    player_pos1 = (225, 0)
-    player_pos2 = (225, 450)
-
+    ball = Ball(250, 250, 20, (0, 0, 255), 500, 690)
+    player = None
     if idCounter % 2 == 1:
         games[gameId] = Game(gameId)
+        games[gameId].setBall(ball)
         print("New game created...")
-        ball = Ball(250, 250, 20, (0, 0, 255), 500, 500)
-        games[gameId].p1 = player_pos1
-        games[gameId].ball = ball
+        player = Player(0, 0, 50, 50, (0, 0, 255), 1, 500, 690)
+        games[gameId].setPlayer1(player)
         p = 1
-        start_new_thread(threaded_client, (conn, StartData(player_pos1, player_pos2, 1, ball), gameId))
+        start_new_thread(threaded_client, (conn, player, gameId))
+
     else:
         games[gameId].ready = True
-        games[gameId].p2 = player_pos2
+        player = Player(100, 100, 50, 50, (0, 255, 0), 2, 500, 690)
+        games[gameId].setPlayer2(player)
         p = 2
-        start_new_thread(threaded_client, (conn, StartData(player_pos2, player_pos1, 2, ball), gameId))
+        start_new_thread(threaded_client, (conn, player, gameId))
 

@@ -1,6 +1,45 @@
 import pygame
-from network import Network, GameData
+from network import Network
 from player import Player
+
+class GrahicsPlayer(pygame.sprite.Sprite):
+    def __init__(self, player):
+        super().__init__()
+        self.x = player.x
+        self.y = player.y
+        self.width = player.width
+        self.height = player.height
+        self.radius = int(self.width / 2)
+        self.color = player.color
+        self.rect = pygame.Rect(self.x, self.y, width, height)
+        self.vel = 3
+        self.online = False
+        self.display_height = player.display_height
+        self.display_width = player.display_width
+        self.image = pygame.image.load("sprites/player" + str(player.number) + ".png")
+        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def draw(self, win):
+        #pygame.draw.rect(win, self.color, self.rect)
+        win.blit(self.image, self.rect)
+
+
+class GraphicBall(pygame.sprite.Sprite):
+    def __init__(self, ball):
+        super().__init__()
+        self.x = ball.x
+        self.y = ball.y
+        self.radius = ball.radius
+        self.rect = pygame.Rect(self.x, self.y, self.radius, self.radius)
+        self.center = (self.x, self.y)
+        self.color = ball.color
+        self.online = False
+        self.display_height = ball.display_height
+        self.display_width = ball.display_width
+
+    def draw(self, win):
+        pygame.draw.circle(win, self.color, self.center, self.radius)
 
 
 pygame.font.init()
@@ -10,68 +49,76 @@ width = 690
 height = 500
 ground = pygame.image.load("Images/ground.jpg")
 scoreboard = pygame.image.load("Images/scoreBoard.jpg")
-
-
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Soccer game")
 
 
-
-def redrawWindow(window,game,  p1, p2, ball):
-
+def redrawWindow(window, game, grPl1, grPl2, grBa):
     window.fill((255, 255, 255))
     if not (game.connected()):
         font = pygame.font.SysFont("comicsans", 60)
-        text = font.render("Waiting for Player...", 1, (0, 0, 0), True)
+        text = font.render("Waiting for Player...", 1, (255, 255, 255), True)
         window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
-
-
     else:
-        window.blit(ground,(15,50))
-        window.blit(scoreboard, (300,0))
-        p1.draw(window)
-        p2.update()
-        p2.draw(window)
-        ball.draw(window)
+        window.blit(ground, (15, 50))
+        window.blit(scoreboard, (300, 0))
+        grPl1.draw(win)
+        grPl2.draw(win)
+        grBa.draw(win)
+        if pygame.sprite.collide_rect(grPl1, grBa):
+            game.give_ball(game.getPlayer1())
+        elif pygame.sprite.collide_rect(grPl2, grBa):
+            game.give_ball(game.getPlayer2())
+        elif pygame.sprite.collide_rect(grPl1, grBa) and pygame.sprite.collide_rect(grPl2, grBa):
+            game.out("colliding /////////////////////////////////////////////////////")
+            game.steal_ball()
 
+        game.ballValidation()
+        #game.move(window)
     pygame.display.update()
-
-
 
 
 def main():
     run = True
     n = Network()
-    start_info = n.getStartInfo()
-    p1 = Player(start_info.player_pos1[0], start_info.player_pos1[1], 50, 100, (0, 0, 255), start_info.number, 500, 500)
-    p2 = Player(start_info.player_pos2[0], start_info.player_pos2[1], 50, 100, (0, 255, 0), 0, 500, 500)
-    b = n.getB()
+    p = n.getP()
+
     clock = pygame.time.Clock()
+    game = None
 
     while run:
         clock.tick(60)
-        game = None
+        gp1 = None
+        gp2 = None
+        gb = None
         try:
-            game = n.send(GameData((p1.x, p1.y), p1.number, b))
-        except:
-            break
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                pygame.quit()
-
-        if game.connected():
-            if p1.number == 1:
-                p2.setPos(game.getPos2())
+            if game:
+                if p.hasTheBall:
+                    game = n.send((p, game.ball))
+                else:
+                    game = n.send(p)
             else:
-                p2.setPos(game.getPos1())
-            b = game.ball
-            p1.move()
-        if pygame.sprite.collide_rect(p1, b):
-            b.move()
+                game = n.send(p)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    pygame.quit()
 
-        redrawWindow(win, game, p1, p2, b)
+            if game.connected():
 
+                if p.number == 1:
+                    gp1 = GrahicsPlayer(p)
+                    gp2 = GrahicsPlayer(game.getPlayer2())
+                else:
+                    gp2 = GrahicsPlayer(p)
+                    gp1 = GrahicsPlayer(game.getPlayer1())
+
+                gb = GraphicBall(game.getBall())
+                p.move()
+            redrawWindow(win, game, gp1, gp2, gb)
+
+        except Exception as e:
+            print(e)
+            break
 
 main()

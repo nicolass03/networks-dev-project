@@ -8,14 +8,10 @@ class Network:
         self.server = socket.gethostbyname(socket.getfqdn())
         self.port = 5555
         self.addr = (self.server, self.port)
-        self.start_info = self.connect()
-        self.b = self.start_info.ball
+        self.p = self.connect()
 
-    def getStartInfo(self):
-        return self.start_info
-
-    def getB(self):
-        return self.b
+    def getP(self):
+        return self.p
 
     def connect(self):
         try:
@@ -30,18 +26,3 @@ class Network:
             return pickle.loads(self.client.recv(2048*2))
         except socket.error as e:
             print(e)
-
-
-class StartData:
-    def __init__(self, player_pos1, player_pos2, number, ball):
-        self.player_pos1 = player_pos1
-        self.player_pos2 = player_pos2
-        self.number = number
-        self.ball = ball
-
-
-class GameData:
-    def __init__(self, player_pos, number, ball):
-        self.player_pos = player_pos
-        self.number = number
-        self.ball = ball
