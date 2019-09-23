@@ -41,6 +41,36 @@ class Ball(pygame.sprite.Sprite):
           return
         self.update()
 
+    def shoot(self, power, direction):
+        acceleration = power
+        keys = pygame.key.get_pressed()
+        # for acceleration in reversed(range(power)):
+        if direction == "left":
+            self.x -= power
+        elif direction == "right":
+            self.x += power
+        elif direction == "up":
+            self.y -= power
+        elif direction == "down":
+            self.y += power
+        else:
+            return
+        self.update()
+
+    def aim(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            return "left"
+        elif keys[pygame.K_RIGHT]:
+            return "right"
+        elif keys[pygame.K_UP]:
+            return "up"
+        elif keys[pygame.K_DOWN]:
+            return "down"
+        else:
+            return False
+
+
     def update(self):
         self.center = (self.x, self.y)
         self.rect = pygame.Rect(self.x, self.y, self.radius, self.radius)
