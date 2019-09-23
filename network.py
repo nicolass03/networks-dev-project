@@ -41,9 +41,10 @@ class StartData:
 
 
 class GameData:
-    def __init__(self, player_pos, number, ball_pos, update_ball):
+    def __init__(self, player_pos, number, ball_pos, ball_owner, new_owner):
         self.player_pos = player_pos
         self.number = number
         self.ball_pos = ball_pos
-        self.update_ball = update_ball
+        self.ball_owner = ball_owner
+        self.new_owner = new_owner
 

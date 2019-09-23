@@ -15,7 +15,6 @@ win = pygame.display.set_mode((globals.window_width, globals.window_height))
 pygame.display.set_caption("Soccer game")
 
 
-
 def redrawWindow(window,game,  player, opponent, ball):
 
     window.fill((255, 255, 255))
@@ -36,11 +35,10 @@ def redrawWindow(window,game,  player, opponent, ball):
     pygame.display.update()
 
 
-
-
 def main():
     run = True
-    update_ball = None
+    ball_owner = 0
+    new_owner = False
 
     n = Network()
     start_info = n.getStartInfo()
@@ -53,15 +51,14 @@ def main():
         clock.tick(60)
         game = None
         try:
-            game = n.send(GameData((player.x, player.y), player.number, (ball.x, ball.y), update_ball))
+            game= n.send(GameData((player.x, player.y), player.number, (ball.x, ball.y), ball_owner, new_owner))
         except:
             break
-        update_ball = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-
         if game.connected():
             if player.number == 1:
                 opponent.setPos(game.getPos2())
@@ -70,15 +67,20 @@ def main():
             ball.setPos(game.ball)
             player.move()
 
-            if game.update_ball:
-                ball.setOwner(False)
+            #if game.ball_owner is True:
+            #ball.setOwner(False)
+
+        new_owner = False
+        if player.number != game.ball_owner:
+            ball.owner = False
 
         if pygame.sprite.collide_mask(player, ball) and pygame.key.get_pressed()[pygame.K_SPACE]:
             ball.setOwner(True)
-            update_ball = True
+            new_owner = True
+            ball_owner = player.number
             game.ball_owner = ball.owner
 
-        if pygame.sprite.collide_mask(player, ball) and ball.owner:
+        if pygame.sprite.collide_mask(player, ball) and ball.owner is True:
             ball.move()
 
         redrawWindow(win, game, player, opponent, ball)
