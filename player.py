@@ -39,7 +39,7 @@ class Player(pygame.sprite.Sprite):
             self.x -= self.vel
 
         if keys[pygame.K_RIGHT]\
-                and self.x + self.vel <= self.display_height - self.height:
+                and self.x + self.vel <= self.display_width - self.height:
             self.x += self.vel
 
         if keys[pygame.K_UP]\

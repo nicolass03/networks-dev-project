@@ -41,9 +41,9 @@ def threaded_client(conn, startData, gameId):
             else:
                 if data.number == 1:
                     game.p1 = data.player_pos
-                    game.ball = data.ball
                 else:
                     game.p2 = data.player_pos
+                game.ball = data.ball_pos
 
                 print("Received: ", data)
                 print("Sending : ", game)
@@ -65,7 +65,7 @@ while True:
     if idCounter % 2 == 1:
         games[gameId] = Game(gameId)
         print("New game created...")
-        ball = Ball(250, 250, 20, (0, 0, 255), 500, 500)
+        ball = (250, 250)
         games[gameId].p1 = player_pos1
         games[gameId].ball = ball
         p = 1

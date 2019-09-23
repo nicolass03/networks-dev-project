@@ -2,6 +2,7 @@ class Game:
     p1 = None
     p2 = None
     ball = None
+    update_ball= None
 
     def __init__(self, id):
         self.ready = False

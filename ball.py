@@ -13,9 +13,13 @@ class Ball(pygame.sprite.Sprite):
         self.online = False
         self.display_height = display_height
         self.display_width = display_width
+        self.owner = None
+
+        self.image = pygame.image.load("sprites/ball.png")
+        self.mask = pygame.mask.from_surface(self.image)
 
     def draw(self, win):
-        pygame.draw.circle(win, self.color, self.center, self.radius)
+        win.blit(self.image, self.rect)
 
     def getStatus(self):
         return self.online
@@ -40,4 +44,13 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         self.center = (self.x, self.y)
         self.rect = pygame.Rect(self.x, self.y, self.radius, self.radius)
+
+    def setPos(self, pos):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.update()
+
+    def setOwner(self, bool):
+        self.owner = bool
+
 

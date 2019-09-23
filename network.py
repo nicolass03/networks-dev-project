@@ -9,7 +9,7 @@ class Network:
         self.port = 5555
         self.addr = (self.server, self.port)
         self.start_info = self.connect()
-        self.b = self.start_info.ball
+        self.b = self.start_info.ball_pos
 
     def getStartInfo(self):
         return self.start_info
@@ -33,15 +33,17 @@ class Network:
 
 
 class StartData:
-    def __init__(self, player_pos1, player_pos2, number, ball):
+    def __init__(self, player_pos1, player_pos2, number, ball_pos):
         self.player_pos1 = player_pos1
         self.player_pos2 = player_pos2
         self.number = number
-        self.ball = ball
+        self.ball_pos = ball_pos
 
 
 class GameData:
-    def __init__(self, player_pos, number, ball):
+    def __init__(self, player_pos, number, ball_pos, update_ball):
         self.player_pos = player_pos
         self.number = number
-        self.ball = ball
+        self.ball_pos = ball_pos
+        self.update_ball = update_ball
+
