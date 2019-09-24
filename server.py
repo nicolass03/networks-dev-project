@@ -1,12 +1,14 @@
 import socket
 from _thread import *
+from threading import Thread
 from game import Game
 from player import Player
 from ball import Ball
+from client_handler import ClientHandler
 import pickle
 import sys
 
-server = socket.gethostbyname(socket.getfqdn())
+server = "localhost"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,39 +23,42 @@ print("Waiting for a connection, Server Started")
 
 connected = set()
 games = {}
+threads = []
 idCounter = 0
 
 
-def threaded_client(conn, player, gameId):
-    global idCount
-    conn.send(pickle.dumps(player))
+class threaded_client(Thread):
 
-    response = ""
+    def __init__(self, conn, player, gameId):
+        Thread.__init__(self)
+        self.gameId = gameId
+        conn.send(pickle.dumps(player))
 
-    while True:
-        data = pickle.loads(conn.recv(2048 * 2))
-        if gameId in games:
-            game = games[gameId]
+    def run(self):
+        while True:
+            data = pickle.loads(conn.recv(2048 * 2))
+            if self.gameId in games:
+                game = games[self.gameId]
 
-            if not data:
-                break
-            else:
-                if type(data) == Player:
-                    if data.number == 1:
-                        game.setPlayer1(data)
-                    else:
-                        game.setPlayer2(data)
+                if not data:
+                    break
                 else:
-                    if data[0].number == 1:
-                        game.setPlayer1(data[0])
+                    if type(data) == Player:
+                        if data.number == 1:
+                            game.setPlayer1(data)
+                        else:
+                            game.setPlayer2(data)
                     else:
-                        game.setPlayer2(data[0])
-                    game.setBall(data[1])
-                print("Received: ", data)
-                print("Sending : ", game)
-                conn.send(pickle.dumps(game))
-        else:
-            break
+                        if data[0].number == 1:
+                            game.setPlayer1(data[0])
+                        else:
+                            game.setPlayer2(data[0])
+                        game.setBall(data[1])
+                    print("Received: ", data)
+                    print("Sending : ", game)
+                    conn.send(pickle.dumps(game))
+            else:
+                break
 
 
 while True:
@@ -71,12 +76,18 @@ while True:
         player = Player(0, 0, 50, 50, (0, 0, 255), 1, 500, 690)
         games[gameId].setPlayer1(player)
         p = 1
-        start_new_thread(threaded_client, (conn, player, gameId))
+        t = threaded_client(conn,player,gameId)
+        t.start()
+        threads.append(t)
 
     else:
         games[gameId].ready = True
         player = Player(100, 100, 50, 50, (0, 255, 0), 2, 500, 690)
         games[gameId].setPlayer2(player)
         p = 2
-        start_new_thread(threaded_client, (conn, player, gameId))
+        t = threaded_client(conn, player, gameId)
+        t.start()
+        threads.append(t)
 
+for t in threads:
+    t.join()

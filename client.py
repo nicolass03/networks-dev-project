@@ -1,5 +1,5 @@
 import pygame
-from network import Network
+from client_handler import ClientHandler
 from player import Player
 
 class GrahicsPlayer(pygame.sprite.Sprite):
@@ -96,7 +96,7 @@ def redrawWindow(window, game, grPl1, grPl2, grBa):
 
 def main():
     run = True
-    n = Network()
+    n = ClientHandler()
     p = n.getP()
 
     clock = pygame.time.Clock()
