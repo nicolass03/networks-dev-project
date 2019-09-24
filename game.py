@@ -30,6 +30,9 @@ class Game:
     def give_ball(self, player):
         player.setBall(True)
 
+    def quit_ball(self, player):
+        player.setBall(False)
+
     def ballValidation(self):
         if self.p1.hasTheBall():
             if self.p1.is_moving_down():
@@ -64,11 +67,15 @@ class Game:
     def steal_ball(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_s]:
-            if self.p1.hasTheBall and not self.p2.hasTheBall:
+        if keys[pygame.K_SPACE]:
+            print("space pressed")
+            if self.p1.hasTheBall():
+                self.quit_ball(self.p1)
                 self.give_ball(self.p2)
-            elif self.p2.hasTheBall and not self.p1.hasTheBall:
-                 self.give_ball(self.p1)
+            elif self.p2.hasTheBall():
+                self.quit_ball(self.p2)
+                self.give_ball(self.p1)
+
 
     def out(self,msg):
         print(msg)

@@ -37,9 +37,11 @@ class GraphicBall(pygame.sprite.Sprite):
         self.online = False
         self.display_height = ball.display_height
         self.display_width = ball.display_width
+        self.image = pygame.image.load("sprites/ball2.png")
 
     def draw(self, win):
-        pygame.draw.circle(win, self.color, self.center, self.radius)
+        win.blit(self.image, self.rect)
+        #pygame.draw.circle(win, self.color, self.center, self.radius)
 
 
 pygame.font.init()
@@ -57,19 +59,33 @@ def redrawWindow(window, game, grPl1, grPl2, grBa):
     window.fill((255, 255, 255))
     if not (game.connected()):
         font = pygame.font.SysFont("comicsans", 60)
-        text = font.render("Waiting for Player...", 1, (255, 255, 255), True)
+
+        font1 = pygame.font.SysFont("comicsans", 40)
+
+        text = font.render("Waiting for Player...", 1, (0, 0, 0), True)
+
+        text1 = font1.render("Press Q to claim the ball", 1, (0, 0, 0), True)
+
+        text2 = font1.render("Press Space and UP/DOWN/LEFT/RIGHT", 1, (0, 0, 0), True)
+
         window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
+
+        window.blit(text1, (width / 2 - text1.get_width() / 2, (height / 2 - text.get_height() / 2) + 100))
+
+        window.blit(text2, (width / 2 - text2.get_width() / 2, (height / 2 - text.get_height() / 2) + 150))
     else:
         window.blit(ground, (15, 50))
         window.blit(scoreboard, (300, 0))
         grPl1.draw(win)
         grPl2.draw(win)
         grBa.draw(win)
-        if pygame.sprite.collide_rect(grPl1, grBa):
+
+        if pygame.sprite.collide_mask(grPl1, grBa):
             game.give_ball(game.getPlayer1())
-        elif pygame.sprite.collide_rect(grPl2, grBa):
+        elif pygame.sprite.collide_mask(grPl2, grBa):
             game.give_ball(game.getPlayer2())
-        elif pygame.sprite.collide_rect(grPl1, grBa) and pygame.sprite.collide_rect(grPl2, grBa):
+        if pygame.sprite.collide_mask(grPl1, grPl2) and (
+                game.getPlayer1().hasTheBall() or game.getPlayer2().hasTheBall()):
             game.out("colliding /////////////////////////////////////////////////////")
             game.steal_ball()
 
