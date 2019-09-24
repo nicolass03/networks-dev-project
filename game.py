@@ -1,5 +1,5 @@
 import pygame
-
+from ball import POWER
 class Game:
 
     def __init__(self, id):
@@ -76,6 +76,34 @@ class Game:
                 self.quit_ball(self.p2)
                 self.give_ball(self.p1)
 
+    def shoot(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_z]:
+            if self.p1.hasTheBall():
+                self.quit_ball(self.p1)
+                for x in range(0, POWER):
+                    if self.p1.is_moving_down():
+                        self.ball.y += 3 # + self.p1.height
+                    if self.p1.is_moving_up():
+                        self.ball.y -= 3
+                    if self.p1.is_moving_left():
+                        self.ball.x -= 3
+                    if self.p1.is_moving_right():
+                        self.ball.x += 3  # + self.p1.width
+                    self.ball.update()
+            elif self.p2.hasTheBall():
+                self.quit_ball(self.p2)
+                for x in range(0, POWER):
+                    if self.p2.is_moving_down():
+                        self.ball.y += 3 # + self.p1.height
+                    if self.p2.is_moving_up():
+                        self.ball.y -= 3
+                    if self.p2.is_moving_left():
+                        self.ball.x -= 3
+                    if self.p2.is_moving_right():
+                        self.ball.x += 3  # + self.p1.width
+                    self.ball.update()
 
     def out(self,msg):
         print(msg)

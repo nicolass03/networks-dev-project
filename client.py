@@ -90,9 +90,9 @@ def redrawWindow(window, game, grPl1, grPl2, grBa):
             game.steal_ball()
 
         game.ballValidation()
+        game.shoot()
         #game.move(window)
     pygame.display.update()
-
 
 def main():
     run = True
@@ -128,6 +128,9 @@ def main():
                 else:
                     gp2 = GrahicsPlayer(p)
                     gp1 = GrahicsPlayer(game.getPlayer1())
+
+                if game.getBall().is_shooted:
+                    if game
 
                 gb = GraphicBall(game.getBall())
                 p.move()

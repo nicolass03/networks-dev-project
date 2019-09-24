@@ -1,5 +1,6 @@
 import pygame
 
+POWER = 20
 
 class Ball:
     def __init__(self, x, y, radius, color, display_height, display_width):
