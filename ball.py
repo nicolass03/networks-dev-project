@@ -13,6 +13,8 @@ class Ball:
         self.online = False
         self.display_height = display_height
         self.display_width = display_width
+        self.speed = 0
+        self.aim = []
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, self.center, self.radius)

@@ -102,6 +102,7 @@ def main():
     clock = pygame.time.Clock()
     game = None
 
+    power = 0
     while run:
         clock.tick(60)
         gp1 = None
@@ -109,7 +110,7 @@ def main():
         gb = None
         try:
             if game:
-                if p.hasTheBall:
+                if game.getPlayer(p.number).hasTheBall() or game.ballIsRolling():
                     game = n.send((p, game.ball))
                 else:
                     game = n.send(p)
@@ -129,8 +130,7 @@ def main():
                     gp2 = GrahicsPlayer(p)
                     gp1 = GrahicsPlayer(game.getPlayer1())
 
-                if game.getBall().is_shooted:
-                    if game
+
 
                 gb = GraphicBall(game.getBall())
                 p.move()
