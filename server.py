@@ -8,7 +8,7 @@ from client_handler import ClientHandler
 import pickle
 import sys
 
-server = "172.30.190.3"
+server = "localhost"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

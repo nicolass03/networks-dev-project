@@ -5,7 +5,7 @@ import pickle
 class ClientHandler:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "172.30.190.3"
+        self.server = "localhost"
         self.port = 5555
         self.addr = (self.server, self.port)
 
