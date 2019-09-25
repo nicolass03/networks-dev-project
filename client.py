@@ -50,32 +50,45 @@ pygame.mixer.init()
 width = 690
 height = 500
 ground = pygame.image.load("Images/ground.jpg")
-scoreboard = pygame.image.load("Images/scoreBoard.jpg")
+waitScreen = pygame.image.load("Images/waitScreen.jpg")
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Soccer game")
-
+pygame.mixer.music.load('Music/gameMusic.mp3')
 
 def redrawWindow(window, game, grPl1, grPl2, grBa):
     window.fill((255, 255, 255))
     if not (game.connected()):
+
+        window.blit(waitScreen, (-40,20))
+
         font = pygame.font.SysFont("comicsans", 60)
 
         font1 = pygame.font.SysFont("comicsans", 40)
 
-        text = font.render("Waiting for Player...", 1, (0, 0, 0), True)
+        text = font.render("Waiting for Player...", 1, (255, 255, 255), True)
 
-        text1 = font1.render("Press Q to claim the ball", 1, (0, 0, 0), True)
+        text1 = font1.render("Press Q to claim the ball", 1, (255, 255, 255), True)
 
-        text2 = font1.render("Press Space and UP/DOWN/LEFT/RIGHT", 1, (0, 0, 0), True)
+        text2 = font1.render("Press Space and UP/DOWN/LEFT/RIGHT", 1, (255, 255, 255), True)
 
-        window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
+        window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2 + 60))
 
-        window.blit(text1, (width / 2 - text1.get_width() / 2, (height / 2 - text.get_height() / 2) + 100))
+        window.blit(text1, (width / 2 - text1.get_width() / 2, (height / 2 - text.get_height() / 2) + 115))
 
         window.blit(text2, (width / 2 - text2.get_width() / 2, (height / 2 - text.get_height() / 2) + 150))
     else:
+
+
+        font = pygame.font.SysFont("comicsans", 40)
+
+        txtHome = font.render("Home: ", 1, (0, 0, 0), True)
+        txtAway = font.render("Away: ", 1, (0, 0, 0), True)
+
         window.blit(ground, (15, 50))
-        window.blit(scoreboard, (300, 0))
+        window.blit(txtHome, (120,10))
+        window.blit(txtAway, (450,10))
+
+
         grPl1.draw(win)
         grPl2.draw(win)
         grBa.draw(win)
@@ -140,4 +153,6 @@ def main():
             print(e)
             break
 
+pygame.mixer.music.play()
 main()
+
