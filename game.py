@@ -19,6 +19,17 @@ class Game:
     def getPlayer2(self):
         return self.p2
 
+    def getPlayer(self, number):
+        if number == 1:
+            return self.p1
+        elif number == 2:
+            return self.p2
+        else:
+            raise ValueError("No Player matches the specified arg")
+
+    def ballIsRolling(self):
+        return (False, True)[self.ball.speed > 0]
+
     def bothOnline(self):
         return self.p1Online and self.p2Online
 
@@ -28,9 +39,11 @@ class Game:
         self.ball.draw(win)
 
     def give_ball(self, player):
+        self.ball.speed = 0
         player.setBall(True)
 
     def quit_ball(self, player):
+        self.ball.speed = 0
         player.setBall(False)
 
     def ballValidation(self):
@@ -79,31 +92,35 @@ class Game:
     def shoot(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_z]:
-            if self.p1.hasTheBall():
-                self.quit_ball(self.p1)
-                for x in range(0, POWER):
-                    if self.p1.is_moving_down():
-                        self.ball.y += 3 # + self.p1.height
-                    if self.p1.is_moving_up():
-                        self.ball.y -= 3
-                    if self.p1.is_moving_left():
-                        self.ball.x -= 3
-                    if self.p1.is_moving_right():
-                        self.ball.x += 3  # + self.p1.width
-                    self.ball.update()
-            elif self.p2.hasTheBall():
-                self.quit_ball(self.p2)
-                for x in range(0, POWER):
-                    if self.p2.is_moving_down():
-                        self.ball.y += 3 # + self.p1.height
-                    if self.p2.is_moving_up():
-                        self.ball.y -= 3
-                    if self.p2.is_moving_left():
-                        self.ball.x -= 3
-                    if self.p2.is_moving_right():
-                        self.ball.x += 3  # + self.p1.width
-                    self.ball.update()
+        if keys[pygame.K_z] and self.ball.speed == 0:
+            self.ball.aim = []
+            self.ball.speed = 15
+            if keys[pygame.K_LEFT]:
+                self.ball.aim.append("left")
+                self.ball.x -= 70
+            if keys[pygame.K_RIGHT]:
+                self.ball.aim.append("right")
+                self.ball.x += 50
+            if keys[pygame.K_UP]:
+                self.ball.aim.append("up")
+                self.ball.y -= 70
+            if keys[pygame.K_DOWN]:
+                self.ball.aim.append("down")
+                self.ball.y += 50
+
+        elif not self.p1.hasTheBall() and not self.p2.hasTheBall() and self.ball.speed > 0:
+            for x in range(len(self.ball.aim)):
+                if self.ball.aim[x] == "left":
+                    self.ball.x -= self.ball.speed / len(self.ball.aim)
+                if self.ball.aim[x] == "right":
+                    self.ball.x += self.ball.speed / len(self.ball.aim)
+                if self.ball.aim[x] == "up":
+                    self.ball.y -= self.ball.speed / len(self.ball.aim)
+                if self.ball.aim[x] == "down":
+                    self.ball.y += self.ball.speed / len(self.ball.aim)
+                self.ball.speed *= .90
+
+        self.ball.update()
 
     def out(self,msg):
         print(msg)

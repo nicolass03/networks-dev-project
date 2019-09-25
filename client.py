@@ -50,55 +50,32 @@ pygame.mixer.init()
 width = 690
 height = 500
 ground = pygame.image.load("Images/ground.jpg")
-waitScreen = pygame.image.load("Images/waitScreen.jpg")
+scoreboard = pygame.image.load("Images/scoreBoard.jpg")
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Soccer game")
-pygame.mixer.music.load('Music/gameMusic.mp3')
 
 
 def redrawWindow(window, game, grPl1, grPl2, grBa):
     window.fill((255, 255, 255))
     if not (game.connected()):
-
-
-        window.blit(waitScreen, (-50, 10))
-
         font = pygame.font.SysFont("comicsans", 60)
 
         font1 = pygame.font.SysFont("comicsans", 40)
 
-        text = font.render("Waiting for Player...", 1, (255, 255, 255), True)
+        text = font.render("Waiting for Player...", 1, (0, 0, 0), True)
 
-        text1 = font1.render("Press Q to claim the ball", 1, (255, 255, 255), True)
+        text1 = font1.render("Press Q to claim the ball", 1, (0, 0, 0), True)
 
-        text2 = font1.render("Press Space and UP/DOWN/LEFT/RIGHT", 1, (255, 255, 255), True)
+        text2 = font1.render("Press Space and UP/DOWN/LEFT/RIGHT", 1, (0, 0, 0), True)
 
-        window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2 +50))
+        window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2))
 
-        window.blit(text1, (width / 2 - text1.get_width() / 2, (height / 2 - text.get_height() / 2) + 110))
+        window.blit(text1, (width / 2 - text1.get_width() / 2, (height / 2 - text.get_height() / 2) + 100))
 
         window.blit(text2, (width / 2 - text2.get_width() / 2, (height / 2 - text.get_height() / 2) + 150))
-
-
-
-
     else:
-
-
         window.blit(ground, (15, 50))
-
-
-        font = pygame.font.SysFont("comicsans", 30)
-
-
-        txtPlayer1 = font.render("Home: ", 1, (0, 0, 0), True)
-        txtPlayer2 = font.render("Away: " , 1, (0, 0, 0), True)
-
-
-        window.blit(txtPlayer1, (130, 10))
-        window.blit(txtPlayer2, (450,10))
-
-
+        window.blit(scoreboard, (300, 0))
         grPl1.draw(win)
         grPl2.draw(win)
         grBa.draw(win)
@@ -125,6 +102,7 @@ def main():
     clock = pygame.time.Clock()
     game = None
 
+    power = 0
     while run:
         clock.tick(60)
         gp1 = None
@@ -132,7 +110,7 @@ def main():
         gb = None
         try:
             if game:
-                if p.hasTheBall:
+                if game.getPlayer(p.number).hasTheBall() or game.ballIsRolling():
                     game = n.send((p, game.ball))
                 else:
                     game = n.send(p)
@@ -152,8 +130,7 @@ def main():
                     gp2 = GrahicsPlayer(p)
                     gp1 = GrahicsPlayer(game.getPlayer1())
 
-                #  if game.getBall().is_shooted:
-                    #if game
+
 
                 gb = GraphicBall(game.getBall())
                 p.move()
@@ -162,6 +139,5 @@ def main():
         except Exception as e:
             print(e)
             break
-#pygame.mixer.music.play()
-main()
 
+main()
