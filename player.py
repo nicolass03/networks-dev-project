@@ -35,7 +35,7 @@ class Player:
     def move(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_LEFT] and self.x - self.vel >= 0:
+        if keys[pygame.K_LEFT] and self.x - self.vel >= 50:
             self.x -= self.vel
             self.moving_left = True
             print("left")
@@ -53,7 +53,7 @@ class Player:
             print("not right")
 
         if keys[pygame.K_UP] \
-                and self.y - self.vel >= 0:
+                and self.y - self.vel >= 60:
             self.y -= self.vel
             self.moving_up = True
             print("up")
