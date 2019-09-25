@@ -59,7 +59,7 @@ def redrawWindow(window, game, grPl1, grPl2, grBa):
     window.fill((255, 255, 255))
     if not (game.connected()):
 
-        window.blit(waitScreen, (-40,20))
+        window.blit(waitScreen, (-40,10))
 
         font = pygame.font.SysFont("comicsans", 60)
 

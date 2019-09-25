@@ -104,7 +104,7 @@ class Game:
             if keys[pygame.K_UP]:
                 self.ball.aim.append("up")
                 self.ball.y -= 70
-            if keys[pygame.K_DOWN]:
+            if keys[pygame.K_DOWN] :
                 self.ball.aim.append("down")
                 self.ball.y += 50
 

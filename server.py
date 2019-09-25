@@ -69,7 +69,7 @@ while True:
         games[gameId] = Game(gameId)
         games[gameId].setBall(ball)
         print("New game created...")
-        player = Player(0, 225, 50, 50, (0, 0, 255), 1, 500, 690)
+        player = Player(40, 225, 50, 50, (0, 0, 255), 1, 500, 690)
         games[gameId].setPlayer1(player)
         p = 1
         client_thread = threading.Thread(
