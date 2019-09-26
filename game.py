@@ -91,73 +91,38 @@ class Game:
 
     def shoot(self):
         keys = pygame.key.get_pressed()
-        self.ball.collided_left = False
-        self.ball.collided_right = False
-        self.ball.collided_down = False
-        self.ball.collided_up = False
 
         if keys[pygame.K_z] and self.ball.speed == 0:
-            self.ball.collided_left = False
-            self.ball.collided_right = False
-            self.ball.collided_down = False
-            self.ball.collided_up = False
-            self.ball.aim = []
+
+            self.ball.horizontal_motion = ""
+            self.ball.vertical_motion = ""
             self.ball.speed = 15
             if keys[pygame.K_LEFT]:
-                self.ball.aim.append("left")
+                self.ball.horizontal_motion = "left"
                 self.ball.x -= 70
-            if keys[pygame.K_RIGHT]:
-                self.ball.aim.append("right")
+            elif keys[pygame.K_RIGHT]:
+                self.ball.horizontal_motion = "right"
                 self.ball.x += 50
             if keys[pygame.K_UP]:
-                self.ball.aim.append("up")
+                self.ball.vertical_motion = "up"
                 self.ball.y -= 70
-            if keys[pygame.K_DOWN] :
-                self.ball.aim.append("down")
+            elif keys[pygame.K_DOWN]:
+                self.ball.vertical_motion = "down"
                 self.ball.y += 50
 
         elif not self.p1.hasTheBall() and not self.p2.hasTheBall() and self.ball.speed > 0:
+            self.ball.rebound()
+            if self.ball.horizontal_motion == "left":
+                self.ball.x -= self.ball.speed
+            elif self.ball.horizontal_motion == "right":
+                self.ball.x += self.ball.speed
+            if self.ball.vertical_motion == "up":
+                self.ball.y -= self.ball.speed
+            elif self.ball.vertical_motion == "down":
+                self.ball.y += self.ball.speed
+            self.ball.speed *= .95
 
-            for x in range(len(self.ball.aim)):
-                if self.ball.aim[x] == "left":
-                    if self.ball.collided_left:
-                        print("////////////////////////// collided left ///////////////////////")
-                        self.ball.x += self.ball.speed / len(self.ball.aim)
-                    else:
-                        self.ball.x -= self.ball.speed / len(self.ball.aim)
-                    if not self.ball.collided_left:
-                        self.ball.collided_left_border()
-
-                if self.ball.aim[x] == "right":
-                    if self.ball.collided_right:
-                        print(" /////////////////////// collided right  /////////////////////////")
-                        self.ball.x -= self.ball.speed / len(self.ball.aim)
-                    else:
-                        self.ball.x += self.ball.speed / len(self.ball.aim)
-                    if not self.ball.collided_right:
-                        self.ball.collided_right_border()
-
-                if self.ball.aim[x] == "up":
-                    if self.ball.collided_up:
-                        print("//////////////////////////// collided up ////////////////////////////")
-                        self.ball.y += self.ball.speed / len(self.ball.aim)
-                    else:
-                        self.ball.y -= self.ball.speed / len(self.ball.aim)
-                    if not self.ball.collided_up:
-                        self.ball.collided_up_border()
-
-                if self.ball.aim[x] == "down":
-                    if self.ball.collided_down:
-                        print("/////////////////////////////// collided down //////////////////////////")
-                        self.ball.y -= self.ball.speed / len(self.ball.aim)
-                    else:
-                        self.ball.y += self.ball.speed / len(self.ball.aim)
-                    if not self.ball.collided_down:
-                        self.ball.collided_down_border()
-
-                self.ball.speed *= .60
-                self.ball.update()
-            #self.ball.update()
+        self.ball.update()
 
     def out(self,msg):
         print(msg)

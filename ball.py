@@ -14,11 +14,8 @@ class Ball:
         self.display_height = display_height
         self.display_width = display_width
         self.speed = 0
-        self.aim = []
-        self.collided_up = False
-        self.collided_down = False
-        self.collided_left = False
-        self.collided_right = False
+        self.horizontal_motion = ""
+        self.vertical_motion = ""
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, self.center, self.radius)
@@ -60,14 +57,13 @@ class Ball:
 
         return colliding
 
-    def collided_left_border(self):
-        self.collided_left = (True, False)[self.x <= 0]
+    def rebound(self):
+        if self.x > self.display_width:
+            self.horizontal_motion = "left"
+        if self.x < 0:
+            self.horizontal_motion = "right"
+        if self.y > self.display_height:
+            self.vertical_motion = "up"
+        if self.y < 0:
+            self.vertical_motion = "down"
 
-    def collided_up_border(self):
-        self.collided_up = (True, False)[self.y <= 0]
-
-    def collided_right_border(self):
-        self.collided_right = (True, False)[self.x >= 690]
-
-    def collided_down_border(self):
-        self.collided_down = (True, False)[self.y >= 500]
