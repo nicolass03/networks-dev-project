@@ -55,8 +55,9 @@ waitScreen = pygame.image.load("Images/waitScreen.jpg")
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Soccer game")
 pygame.mixer.music.load('Music/gameMusic.mp3')
+period = "1st Half"
 
-def redrawWindow(window, game, grPl1, grPl2, grBa):
+def redrawWindow(window, game, grPl1, grPl2, grBa,time):
     window.fill((255, 255, 255))
     if not (game.connected()):
 
@@ -86,10 +87,14 @@ def redrawWindow(window, game, grPl1, grPl2, grBa):
         font = pygame.font.SysFont("comicsans", 40)
         txtHome = font.render("Home: ", 1, (0, 0, 0), True)
         txtAway = font.render("Away: ", 1, (0, 0, 0), True)
+        txtHalf = font.render(period, 1, (0, 0, 0), True)
+        txtTimer = font.render((str(time[0]) + ":" + ('%02d' % time[1])), 1, (0, 0, 0), True)
 
         window.blit(ground, (15, 50))
         window.blit(txtHome, (120, 10))
         window.blit(txtAway, (450, 10))
+        window.blit(txtTimer, (width / 2 - txtTimer.get_width() / 2, 2))
+        window.blit(txtHalf, (width / 2 - txtHalf.get_width() / 2, 20))
 
         grPl1.draw(win)
         grPl2.draw(win)
@@ -109,10 +114,17 @@ def redrawWindow(window, game, grPl1, grPl2, grBa):
         #game.move(window)
     pygame.display.update()
 
+def show_summary():
+    pass
+
 def main():
     run = True
     n = ClientHandler()
     p = n.getP()
+    minutes = 1
+    seconds = 60
+    dt = 0
+    start_timer = False
 
     clock = pygame.time.Clock()
     game = None
@@ -144,11 +156,24 @@ def main():
                     gp2 = GrahicsPlayer(p)
                     gp1 = GrahicsPlayer(game.getPlayer1())
 
+                seconds -= dt
+                if seconds <= 0:
+                    seconds = 60
+                    minutes -= 1
+                    period = "2nd Half"
+                    game.reset_positions()
+                    if minutes == 0 and seconds == 0:
+                        game.ended = True
 
 
                 gb = GraphicBall(game.getBall())
                 p.move()
-            redrawWindow(win, game, gp1, gp2, gb)
+
+            if not game.ended:
+                redrawWindow(win, game, gp1, gp2, gb, (minutes, seconds))
+                dt = clock.tick(60) / 1000
+            else:
+                show_summary()
 
         except Exception as e:
             print(e)

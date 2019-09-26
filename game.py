@@ -9,6 +9,8 @@ class Game:
         self.p1 = None
         self.p2 = None
         self.ball = None
+        self.score_record = set()
+        self.ended = False
 
     def connected(self):
         return self.ready
@@ -157,4 +159,11 @@ class Game:
     def reset(self):
         self.score = [0, 0]
         self.reset_positions()
+
+    def add_goal(self, player, time):
+        if player.number == 1:
+            self.score[0] += 1
+        else:
+            self.score[1] += 1
+        self.score_record.add((player, time))
 
