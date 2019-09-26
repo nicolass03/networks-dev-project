@@ -1,6 +1,7 @@
 import pygame
 from client_handler import ClientHandler
 from player import Player
+import time
 
 class GrahicsPlayer(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -59,35 +60,36 @@ def redrawWindow(window, game, grPl1, grPl2, grBa):
     window.fill((255, 255, 255))
     if not (game.connected()):
 
-        window.blit(waitScreen, (-40,10))
+        window.blit(waitScreen, (-40, 10))
 
         font = pygame.font.SysFont("comicsans", 60)
 
         font1 = pygame.font.SysFont("comicsans", 40)
 
-        text = font.render("Waiting for Player...", 1, (255, 255, 255), True)
+        text = font.render("Waiting for other player...", 1, (255, 255, 255), True)
 
-        text1 = font1.render("Press Q to claim the ball", 1, (255, 255, 255), True)
+        text1 = font1.render("Press SPACE to claim the ball", 1, (255, 255, 255), True)
 
-        text2 = font1.render("Press Space and UP/DOWN/LEFT/RIGHT", 1, (255, 255, 255), True)
+        text2 = font1.render("Press UP/DOWN/LEFT/RIGHT to move", 1, (255, 255, 255), True)
+
+        text3 =  font1.render("Press Z to shoot the ball", 1, (255, 255, 255), True)
 
         window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2 + 60))
 
         window.blit(text1, (width / 2 - text1.get_width() / 2, (height / 2 - text.get_height() / 2) + 115))
 
         window.blit(text2, (width / 2 - text2.get_width() / 2, (height / 2 - text.get_height() / 2) + 150))
+
+        window.blit(text3, ((width / 2 - text2.get_width() / 2) + 80, (height / 2 - text.get_height() / 2) + 190))
     else:
 
-
         font = pygame.font.SysFont("comicsans", 40)
-
         txtHome = font.render("Home: ", 1, (0, 0, 0), True)
         txtAway = font.render("Away: ", 1, (0, 0, 0), True)
 
         window.blit(ground, (15, 50))
-        window.blit(txtHome, (120,10))
-        window.blit(txtAway, (450,10))
-
+        window.blit(txtHome, (120, 10))
+        window.blit(txtAway, (450, 10))
 
         grPl1.draw(win)
         grPl2.draw(win)
@@ -115,7 +117,6 @@ def main():
     clock = pygame.time.Clock()
     game = None
 
-    power = 0
     while run:
         clock.tick(60)
         gp1 = None
@@ -132,10 +133,10 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
+                    n.send("disconnect")
                     pygame.quit()
 
             if game.connected():
-
                 if p.number == 1:
                     gp1 = GrahicsPlayer(p)
                     gp2 = GrahicsPlayer(game.getPlayer2())
@@ -152,6 +153,7 @@ def main():
         except Exception as e:
             print(e)
             break
+
 
 pygame.mixer.music.play()
 main()

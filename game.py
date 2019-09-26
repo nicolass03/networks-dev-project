@@ -85,14 +85,22 @@ class Game:
             if self.p1.hasTheBall():
                 self.quit_ball(self.p1)
                 self.give_ball(self.p2)
-            elif self.p2.hasTheBall():
+            if self.p2.hasTheBall():
                 self.quit_ball(self.p2)
                 self.give_ball(self.p1)
 
     def shoot(self):
         keys = pygame.key.get_pressed()
+        self.ball.collided_left = False
+        self.ball.collided_right = False
+        self.ball.collided_down = False
+        self.ball.collided_up = False
 
         if keys[pygame.K_z] and self.ball.speed == 0:
+            self.ball.collided_left = False
+            self.ball.collided_right = False
+            self.ball.collided_down = False
+            self.ball.collided_up = False
             self.ball.aim = []
             self.ball.speed = 15
             if keys[pygame.K_LEFT]:
@@ -109,18 +117,47 @@ class Game:
                 self.ball.y += 50
 
         elif not self.p1.hasTheBall() and not self.p2.hasTheBall() and self.ball.speed > 0:
+
             for x in range(len(self.ball.aim)):
                 if self.ball.aim[x] == "left":
-                    self.ball.x -= self.ball.speed / len(self.ball.aim)
-                if self.ball.aim[x] == "right":
-                    self.ball.x += self.ball.speed / len(self.ball.aim)
-                if self.ball.aim[x] == "up":
-                    self.ball.y -= self.ball.speed / len(self.ball.aim)
-                if self.ball.aim[x] == "down":
-                    self.ball.y += self.ball.speed / len(self.ball.aim)
-                self.ball.speed *= .90
+                    if self.ball.collided_left:
+                        print("////////////////////////// collided left ///////////////////////")
+                        self.ball.x += self.ball.speed / len(self.ball.aim)
+                    else:
+                        self.ball.x -= self.ball.speed / len(self.ball.aim)
+                    if not self.ball.collided_left:
+                        self.ball.collided_left_border()
 
-        self.ball.update()
+                if self.ball.aim[x] == "right":
+                    if self.ball.collided_right:
+                        print(" /////////////////////// collided right  /////////////////////////")
+                        self.ball.x -= self.ball.speed / len(self.ball.aim)
+                    else:
+                        self.ball.x += self.ball.speed / len(self.ball.aim)
+                    if not self.ball.collided_right:
+                        self.ball.collided_right_border()
+
+                if self.ball.aim[x] == "up":
+                    if self.ball.collided_up:
+                        print("//////////////////////////// collided up ////////////////////////////")
+                        self.ball.y += self.ball.speed / len(self.ball.aim)
+                    else:
+                        self.ball.y -= self.ball.speed / len(self.ball.aim)
+                    if not self.ball.collided_up:
+                        self.ball.collided_up_border()
+
+                if self.ball.aim[x] == "down":
+                    if self.ball.collided_down:
+                        print("/////////////////////////////// collided down //////////////////////////")
+                        self.ball.y -= self.ball.speed / len(self.ball.aim)
+                    else:
+                        self.ball.y += self.ball.speed / len(self.ball.aim)
+                    if not self.ball.collided_down:
+                        self.ball.collided_down_border()
+
+                self.ball.speed *= .60
+                self.ball.update()
+            #self.ball.update()
 
     def out(self,msg):
         print(msg)
@@ -142,3 +179,17 @@ class Game:
 
     def setBall(self,b):
         self.ball = b
+
+    def reset_positions(self):
+        self.ball.x = 250
+        self.ball.y = 250
+        self.p1.x = 40
+        self.p1.y = 255
+        self.p2.x = 640
+        self.p2.y = 255
+        self.ball.update()
+
+    def reset(self):
+        self.score = [0, 0]
+        self.reset_positions()
+
