@@ -23,41 +23,12 @@ class Ball:
     def getStatus(self):
         return self.online
 
-    #def move(self):
-        #power = 3
-        #acceleration = power
-        #keys = pygame.key.get_pressed()
-        #for acceleration in reversed(range(power)):
-        #if keys[pygame.K_LEFT]:
-          #self.x -= acceleration
-        #elif keys[pygame.K_RIGHT]:
-          #self.x += acceleration
-        #elif keys[pygame.K_UP]:
-          #self.y -= acceleration
-       # elif keys[pygame.K_DOWN]:
-          #self.y += acceleration
-        #else:
-          #return
-        #self.update()
-
     def update(self):
         self.center = (self.x, self.y)
         self.rect = pygame.Rect(self.x, self.y, self.radius, self.radius)
 
-    def border_collide(self):
-        colliding = []
-        if self.x < 0:
-            colliding.append("left")
-        if self.x+self.radius > 670:
-            colliding.append("right")
-        if self.y + self.radius > 490:
-            colliding.append("down")
-        if self.y < 0:
-            colliding.append("up")
-
-        return colliding
-
     def rebound(self):
+        """Updates the balls direction if a border is hit"""
         if self.x + self.radius >= self.display_width:
             self.horizontal_motion = "left"
         if self.x <= 0:

@@ -16,12 +16,27 @@ class Game:
         return self.ready
 
     def getPlayer1(self):
+        """ Returns the games p1 member
+            Returns:
+                p1(Player):Player 1 of the game
+        """
         return self.p1
 
     def getPlayer2(self):
+        """ Returns the games p2 member
+            Returns:
+                p1(Player):Player 1 of the game
+        """
         return self.p2
 
     def getPlayer(self, number):
+        """ Returns the games player with the corresponding number
+            Parameters:
+                number (int):The number of the player need
+
+            Returns:
+                p1 or p2 (Player):Player 1 or 2 of the game
+        """
         if number == 1:
             return self.p1
         elif number == 2:
@@ -30,6 +45,10 @@ class Game:
             raise ValueError("No Player matches the specified arg")
 
     def ballIsRolling(self):
+        """ Returns true if the ball is rolling and false otherwise
+            Returns:
+                Bool: True/False
+        """
         return (False, True)[self.ball.speed > 0]
 
     def bothOnline(self):
@@ -92,6 +111,10 @@ class Game:
                 self.give_ball(self.p1)
 
     def shoot(self):
+        """  Determines whether the player wants to shoot the ball.
+        Once the ball is shot the speed is decreased down to 0.
+        Possible rebounds are handled
+        """
         keys = pygame.key.get_pressed()
         goal = ""
         if keys[pygame.K_z] and self.ball.speed == 0:
