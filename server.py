@@ -9,7 +9,7 @@ import pickle
 import sys
 
 server = "localhost"
-port = 5555
+port = 5556
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -75,7 +75,7 @@ while True:
 
     idCounter += 1
     gameId = (idCounter - 1) // 2
-    ball = Ball(250, 250, 20, (0, 0, 255), 500, 690)
+    ball = Ball(330, 220, 20, (0, 0, 255), 490, 670)
     player = None
     waiting_game = False
 
@@ -84,13 +84,14 @@ while True:
             waiting_game = True
             print("[+] Adding client to waiting game "+str(key)+"...")
             if type(game.p1) is None:
-                player = Player(40, 225, 50, 50, (0, 0, 255), 1, 500, 690)
+                player = Player(40, 225, 50, 50, (0, 0, 255), 1, 490, 670)
                 games[key].setPlayer1(player)
             else:
-                player = Player(640, 225, 50, 50, (0, 255, 0), 2, 500, 690)
+                player = Player(640, 225, 50, 50, (0, 255, 0), 2, 490, 670)
                 games[key].setPlayer2(player)
-            games[key].ready = True
-            games[key].reset()
+            if games[key].bothOnline():
+                games[key].ready = True
+                games[key].reset()
             client_thread = threading.Thread(
                 target=threaded_client,
                 args=(conn, player, key, addr[0], idCounter)
@@ -109,7 +110,7 @@ while True:
             games[gameId] = Game(gameId)
             games[gameId].setBall(ball)
             print("[+] New game created...")
-            player = Player(40, 225, 50, 50, (0, 0, 255), 1, 500, 690)
+            player = Player(40, 225, 50, 50, (0, 0, 255), 1, 490, 670)
             games[gameId].setPlayer1(player)
             p = 1
             client_thread = threading.Thread(
@@ -127,7 +128,7 @@ while True:
         else:
             print(type(games))
             games[gameId].ready = True
-            player = Player(640, 225, 50, 50, (0, 255, 0), 2, 500, 690)
+            player = Player(640, 225, 50, 50, (0, 255, 0), 2, 490, 670)
             games[gameId].setPlayer2(player)
             p = 2
             client_thread = threading.Thread(

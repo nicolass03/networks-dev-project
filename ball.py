@@ -48,9 +48,9 @@ class Ball:
         colliding = []
         if self.x < 0:
             colliding.append("left")
-        if self.x > 690:
+        if self.x+self.radius > 670:
             colliding.append("right")
-        if self.y > 500:
+        if self.y + self.radius > 490:
             colliding.append("down")
         if self.y < 0:
             colliding.append("up")
@@ -58,12 +58,24 @@ class Ball:
         return colliding
 
     def rebound(self):
-        if self.x > self.display_width:
+        if self.x + self.radius >= self.display_width:
             self.horizontal_motion = "left"
-        if self.x < 0:
+        if self.x <= 0:
             self.horizontal_motion = "right"
-        if self.y > self.display_height:
+        if self.y + self.radius >= self.display_height:
             self.vertical_motion = "up"
-        if self.y < 0:
+        if self.y <= 0:
             self.vertical_motion = "down"
 
+    def validate_goal(self):
+        goal = ""
+        if self.x > self.display_width - 10 and self.y > ((self.display_height / 2) - 50) and self.y < ((self.display_height / 2) + 50):
+            goal = "home"
+        if self.x <= 0 + 5 and self.y > ((self.display_height / 2) - 50) and self.y < ((self.display_height / 2) + 50):
+            goal = "away"
+        return goal
+
+    def quit_motions(self):
+        self.horizontal_motion = ""
+        self.vertical_motion = ""
+        self.speed = 0

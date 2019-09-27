@@ -48,8 +48,8 @@ class GraphicBall(pygame.sprite.Sprite):
 pygame.font.init()
 pygame.mixer.init()
 
-width = 690
-height = 500
+width = 670
+height = 490
 ground = pygame.image.load("Images/ground.jpg")
 waitScreen = pygame.image.load("Images/waitScreen.jpg")
 win = pygame.display.set_mode((width, height))
@@ -75,6 +75,8 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time):
 
         text3 =  font1.render("Press Z to shoot the ball", 1, (255, 255, 255), True)
 
+
+
         window.blit(text, (width / 2 - text.get_width() / 2, height / 2 - text.get_height() / 2 + 60))
 
         window.blit(text1, (width / 2 - text1.get_width() / 2, (height / 2 - text.get_height() / 2) + 115))
@@ -82,6 +84,9 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time):
         window.blit(text2, (width / 2 - text2.get_width() / 2, (height / 2 - text.get_height() / 2) + 150))
 
         window.blit(text3, ((width / 2 - text2.get_width() / 2) + 80, (height / 2 - text.get_height() / 2) + 190))
+
+
+
     else:
 
         font = pygame.font.SysFont("comicsans", 40)
@@ -89,12 +94,16 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time):
         txtAway = font.render("Away: ", 1, (0, 0, 0), True)
         txtHalf = font.render(period, 1, (0, 0, 0), True)
         txtTimer = font.render((str(time[0]) + ":" + ('%02d' % time[1])), 1, (0, 0, 0), True)
+        textScore1 = font.render(str(game.getPlayer1().getGoals()), 1, (0, 0, 0), True)
+        textScore2 = font.render(str(game.getPlayer2().getGoals()), 1, (0, 0, 0), True)
 
-        window.blit(ground, (15, 50))
+        window.blit(ground, (2, 50))
         window.blit(txtHome, (120, 10))
         window.blit(txtAway, (450, 10))
         window.blit(txtTimer, (width / 2 - txtTimer.get_width() / 2, 2))
         window.blit(txtHalf, (width / 2 - txtHalf.get_width() / 2, 20))
+        window.blit(textScore1, (130 + txtHome.get_width(), 10))
+        window.blit(textScore2, (460 + txtAway.get_width(), 10))
 
         grPl1.draw(win)
         grPl2.draw(win)
@@ -106,7 +115,6 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time):
             game.give_ball(game.getPlayer2())
         if pygame.sprite.collide_mask(grPl1, grPl2) and (
                 game.getPlayer1().hasTheBall() or game.getPlayer2().hasTheBall()):
-            game.out("colliding /////////////////////////////////////////////////////")
             game.steal_ball()
 
         game.ballValidation()
@@ -139,7 +147,12 @@ def main():
                 if game.getPlayer(p.number).hasTheBall() or game.ballIsRolling():
                     game = n.send((p, game.ball))
                 else:
-                    game = n.send(p)
+                    if p.goals != game.getPlayer(p.number).getGoals():
+                        p.goals = game.getPlayer(p.number).getGoals()
+                        game = n.send((p, game.ball))
+                    else:
+                        p.goals = game.getPlayer(p.number).getGoals()
+                        game = n.send(p)
             else:
                 game = n.send(p)
             for event in pygame.event.get():

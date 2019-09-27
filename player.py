@@ -19,11 +19,14 @@ class Player:
         self.moving_right = False
         self.moving_up = False
         self.moving_down = False
+        self.goals = 0
 
     # draw(self, win):
         #img = pygame.image.load(self.imageURL)
         #mask = pygame.mask.from_surface(img)
         #win.blit(img, self.rect)
+    def getGoals(self):
+        return self.goals
 
     def hasTheBall(self):
         return self.ball
@@ -37,39 +40,39 @@ class Player:
         if keys[pygame.K_LEFT] and self.x - self.vel >= 35:
             self.x -= self.vel
             self.moving_left = True
-            print("left")
+            #print("left")
         elif not keys[pygame.K_LEFT]:
             self.moving_left = False
-            print("not left")
+            #print("not left")
 
         if keys[pygame.K_RIGHT] \
                 and (self.x + self.vel) <= (self.display_width - self.height):
             self.x += self.vel
             self.moving_right = True
-            print("right")
+            #print("right")
         elif not keys[pygame.K_RIGHT]:
             self.moving_right = False
-            print("not right")
+            #print("not right")
 
         if keys[pygame.K_UP] \
                 and self.y - self.vel >= 60:
             self.y -= self.vel
             self.moving_up = True
-            print("up")
+            #print("up")
 
         elif not keys[pygame.K_UP]:
             self.moving_up = False
-            print("no up")
+            #print("no up")
 
         if keys[pygame.K_DOWN] \
                 and self.y + self.vel <= self.display_height - self.height:
             self.y += self.vel
             self.moving_down = True
-            print("down")
+            #print("down")
 
         elif not keys[pygame.K_DOWN]:
             self.moving_down = False
-            print("no down")
+            #print("no down")
 
         self.update()
 

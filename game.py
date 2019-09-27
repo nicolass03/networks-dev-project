@@ -5,7 +5,7 @@ class Game:
     def __init__(self, id):
         self.ready = False
         self.id = id
-        self.score = [0, 0]
+        self.score = (0, 0)
         self.p1 = None
         self.p2 = None
         self.ball = None
@@ -33,7 +33,7 @@ class Game:
         return (False, True)[self.ball.speed > 0]
 
     def bothOnline(self):
-        return self.p1Online and self.p2Online
+        return self.p1 and self.p2
 
     def move(self, win):
         self.p1.draw(win)
@@ -93,7 +93,7 @@ class Game:
 
     def shoot(self):
         keys = pygame.key.get_pressed()
-
+        goal = ""
         if keys[pygame.K_z] and self.ball.speed == 0:
 
             self.ball.horizontal_motion = ""
@@ -124,10 +124,15 @@ class Game:
                 self.ball.y += self.ball.speed
             self.ball.speed *= .95
 
-        self.ball.update()
+            goal = self.ball.validate_goal()
+            if goal != "":
+                self.ball.quit_motions()
+                if goal == "home":
+                    self.add_goal(self.p1, "")
+                elif goal == "away":
+                    self.add_goal(self.p2, "")
 
-    def out(self,msg):
-        print(msg)
+        self.ball.update()
 
     def getPlayer1(self):
         return self.p1
@@ -148,22 +153,24 @@ class Game:
         self.ball = b
 
     def reset_positions(self):
-        self.ball.x = 250
-        self.ball.y = 250
         self.p1.x = 40
         self.p1.y = 255
         self.p2.x = 640
         self.p2.y = 255
+        self.ball.x = 330
+        self.ball.y = 220
         self.ball.update()
 
     def reset(self):
-        self.score = [0, 0]
+        self.score = (0, 0)
         self.reset_positions()
 
     def add_goal(self, player, time):
-        if player.number == 1:
-            self.score[0] += 1
-        else:
-            self.score[1] += 1
-        self.score_record.add((player, time))
+        #if player.number == 1:
+            #self.score[0] += 1
+        #else:
+            #self.score[1] += 1
+        player.goals+=1
+        self.reset_positions()
+        #self.score_record.add((player, time))
 

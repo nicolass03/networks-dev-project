@@ -6,7 +6,7 @@ class ClientHandler:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server = "localhost"
-        self.port = 5555
+        self.port = 5556
         self.addr = (self.server, self.port)
 
     def getP(self):
