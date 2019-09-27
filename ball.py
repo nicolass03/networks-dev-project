@@ -35,7 +35,7 @@ class Ball:
             self.horizontal_motion = "right"
         if self.y + self.radius >= self.display_height:
             self.vertical_motion = "up"
-        if self.y <= 0:
+        if self.y-50 <= 0:
             self.vertical_motion = "down"
 
     def validate_goal(self):

@@ -8,7 +8,7 @@ class Player:
         self.height = height
         self.color = color
         self.rect = (x, y, width, height)
-        self.vel = 3
+        self.vel = 6
         self.online = False
         self.number = number
         self.display_height = display_height

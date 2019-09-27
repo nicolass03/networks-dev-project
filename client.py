@@ -100,8 +100,8 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time):
         window.blit(ground, (2, 50))
         window.blit(txtHome, (120, 10))
         window.blit(txtAway, (450, 10))
-        window.blit(txtTimer, (width / 2 - txtTimer.get_width() / 2, 2))
-        window.blit(txtHalf, (width / 2 - txtHalf.get_width() / 2, 20))
+        window.blit(txtTimer, (width / 2 - txtTimer.get_width() / 2, 0))
+        window.blit(txtHalf, (width / 2 - txtHalf.get_width() / 2, 25))
         window.blit(textScore1, (130 + txtHome.get_width(), 10))
         window.blit(textScore2, (460 + txtAway.get_width(), 10))
 
@@ -122,22 +122,42 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time):
         #game.move(window)
     pygame.display.update()
 
-def show_summary():
-    pass
+def show_summary(g):
+    win.fill((255,255,255))
+    font = pygame.font.SysFont("comicsans", 60)
+
+    txtSummary = font.render("SUMMARY ", 1, (0, 0, 0), True)
+    txtHome = font.render("Home: ", 1, (0, 0, 0), True)
+    txtAway = font.render("Away: ", 1, (0, 0, 0), True)
+    txtPointHome = font.render(str(g.getPlayer1().getGoals()), 1, (0, 0, 0), True)
+    txtPointAway = font.render(str(g.getPlayer2().getGoals()), 1, (0, 0, 0), True)
+
+    win.blit(txtSummary, (width / 2 - txtSummary.get_width() / 2, 100))
+    win.blit(txtHome, ((width / 2 - txtHome.get_width() / 2)/2, 160))
+    win.blit(txtAway, (width / 2 - txtHome.get_width() / 2+(width / 2 - txtAway.get_width() / 2)/2, 160))
+    win.blit(txtPointHome, ((width / 2 - txtHome.get_width() / 2) / 2 +30, 280))
+    win.blit(txtPointAway, (width / 2 - txtHome.get_width() / 2 + (width / 2 - txtAway.get_width() / 2) / 2 +30, 280))
+
+
+    pygame.display.update()
+
+
+global ended
 
 def main():
     run = True
     n = ClientHandler()
     p = n.getP()
-    minutes = 1
+    minutes = 0
     seconds = 60
     dt = 0
     start_timer = False
+    ended = False
 
     clock = pygame.time.Clock()
     game = None
 
-    while run:
+    while not ended:
         clock.tick(60)
         gp1 = None
         gp2 = None
@@ -171,27 +191,30 @@ def main():
 
                 seconds -= dt
                 if seconds <= 0:
-                    seconds = 60
-                    minutes -= 1
-                    period = "2nd Half"
-                    game.reset_positions()
-                    if minutes == 0 and seconds == 0:
-                        game.ended = True
-
+                    if minutes <= 0 and seconds <= 0:
+                        ended = True
+                        break
+                    else:
+                        seconds = 60
+                        minutes -= 0
+                        period = "2nd Half"
+                        game.reset_positions()
 
                 gb = GraphicBall(game.getBall())
                 p.move()
-
-            if not game.ended:
-                redrawWindow(win, game, gp1, gp2, gb, (minutes, seconds))
-                dt = clock.tick(60) / 1000
-            else:
-                show_summary()
+            redrawWindow(win, game, gp1, gp2, gb, (minutes, seconds))
+            dt = clock.tick(60) / 1000
 
         except Exception as e:
             print(e)
             break
 
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+        show_summary(game)
 
 pygame.mixer.music.play()
 main()
