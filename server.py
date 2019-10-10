@@ -53,12 +53,18 @@ def threaded_client(conn, player, gameId, ip, idCounter):
                             current_game.setPlayer1(data)
                         else:
                             current_game.setPlayer2(data)
+
                     else:
                         if data[0].number == 1:
                             current_game.setPlayer1(data[0])
                         else:
                             current_game.setPlayer2(data[0])
-                        current_game.setBall(data[1])
+
+                        if current_game.ball_owner == data[2]:
+                            current_game.setBall(data[1])
+                        elif data[3] is True:
+                            current_game.ball_owner = data[2]
+
                     #print("Received: ", data)
                     #print("Sending : ", current_game)
                     conn.send(pickle.dumps(current_game))

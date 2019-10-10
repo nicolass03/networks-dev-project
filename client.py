@@ -57,7 +57,8 @@ pygame.display.set_caption("Soccer game")
 pygame.mixer.music.load('Music/gameMusic.mp3')
 period = "1st Half"
 
-def redrawWindow(window, game, grPl1, grPl2, grBa,time):
+def redrawWindow(window, game, grPl1, grPl2, grBa,time, p):
+    new_owner = False
     window.fill((255, 255, 255))
     if not (game.connected()):
 
@@ -109,18 +110,24 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time):
         grPl2.draw(win)
         grBa.draw(win)
 
-        if pygame.sprite.collide_mask(grPl1, grBa):
-            game.give_ball(game.getPlayer1())
-        elif pygame.sprite.collide_mask(grPl2, grBa):
-            game.give_ball(game.getPlayer2())
+
+        game.give_ball_nr(game.ball_owner)
+
         if pygame.sprite.collide_mask(grPl1, grPl2) and (
                 game.getPlayer1().hasTheBall() or game.getPlayer2().hasTheBall()):
-            game.steal_ball()
+            new_owner = game.steal_ball()
+        elif pygame.sprite.collide_mask(grPl1, grBa) and game.ball_owner == 0:
+            game.give_ball(game.getPlayer1())
+            new_owner = True
+        elif pygame.sprite.collide_mask(grPl2, grBa) and game.ball_owner == 0:
+            game.give_ball(game.getPlayer2())
+            new_owner = True
 
         game.ballValidation()
         game.shoot()
         #game.move(window)
     pygame.display.update()
+    return new_owner
 
 def show_summary(g):
     win.fill((255,255,255))
@@ -157,6 +164,8 @@ def main():
     clock = pygame.time.Clock()
     game = None
 
+    new_owner = False
+
     while not ended:
         clock.tick(60)
         gp1 = None
@@ -165,7 +174,7 @@ def main():
         try:
             if game:
                 if game.getPlayer(p.number).hasTheBall() or game.ballIsRolling():
-                    game = n.send((p, game.ball))
+                    game = n.send((p, game.ball, game.ball_owner, new_owner))
                 else:
                     if p.goals != game.getPlayer(p.number).getGoals():
                         p.goals = game.getPlayer(p.number).getGoals()
@@ -202,7 +211,8 @@ def main():
 
                 gb = GraphicBall(game.getBall())
                 p.move()
-            redrawWindow(win, game, gp1, gp2, gb, (minutes, seconds))
+            new_owner = False
+            new_owner = redrawWindow(win, game, gp1, gp2, gb, (minutes, seconds), p)
             dt = clock.tick(60) / 1000
 
         except Exception as e:

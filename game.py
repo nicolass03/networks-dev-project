@@ -11,6 +11,7 @@ class Game:
         self.ball = None
         self.score_record = set()
         self.ended = False
+        self.ball_owner = 0
 
     def connected(self):
         return self.ready
@@ -62,6 +63,17 @@ class Game:
     def give_ball(self, player):
         self.ball.speed = 0
         player.setBall(True)
+        self.ball_owner = player.number
+
+    def give_ball_nr(self, number):
+        if self.p1.number == number:
+            self.p1.setBall(True)
+            self.p2.setBall(False)
+            self.ball.speed = 0
+        elif self.p2.number == number:
+            self.p2.setBall(True)
+            self.p1.setBall(False)
+            self.ball.speed = 0
 
     def quit_ball(self, player):
         self.ball.speed = 0
@@ -106,15 +118,21 @@ class Game:
             if self.p1.hasTheBall():
                 self.quit_ball(self.p1)
                 self.give_ball(self.p2)
-            if self.p2.hasTheBall():
+                self.ball_owner = self.p2.number
+                return True
+            elif self.p2.hasTheBall():
                 self.quit_ball(self.p2)
                 self.give_ball(self.p1)
+                self.ball_owner = self.p1.number
+                return True
+        return False
 
     def shoot(self):
         """  Determines whether the player wants to shoot the ball.
         Once the ball is shot the speed is decreased down to 0.
         Possible rebounds are handled
         """
+
         keys = pygame.key.get_pressed()
         goal = ""
         if keys[pygame.K_z] and self.ball.speed == 0:
@@ -146,6 +164,7 @@ class Game:
             elif self.ball.vertical_motion == "down":
                 self.ball.y += self.ball.speed
             self.ball.speed *= .95
+            #self.ball_owner = 0
 
             goal = self.ball.validate_goal()
             if goal != "":
