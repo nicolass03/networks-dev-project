@@ -69,11 +69,11 @@ class Game:
         if self.p1.number == number:
             self.p1.setBall(True)
             self.p2.setBall(False)
-            self.ball.speed = 0
+            #self.ball.speed = 0
         elif self.p2.number == number:
             self.p2.setBall(True)
             self.p1.setBall(False)
-            self.ball.speed = 0
+            #self.ball.speed = 0
 
     def quit_ball(self, player):
         self.ball.speed = 0
@@ -136,22 +136,21 @@ class Game:
         keys = pygame.key.get_pressed()
         goal = ""
         if keys[pygame.K_z] and self.ball.speed == 0:
-
             self.ball.horizontal_motion = ""
             self.ball.vertical_motion = ""
             self.ball.speed = 15
             if keys[pygame.K_LEFT]:
                 self.ball.horizontal_motion = "left"
-                self.ball.x -= 70
+                self.ball.x -= 100
             elif keys[pygame.K_RIGHT]:
                 self.ball.horizontal_motion = "right"
-                self.ball.x += 50
+                self.ball.x += 100
             if keys[pygame.K_UP]:
                 self.ball.vertical_motion = "up"
-                self.ball.y -= 70
+                self.ball.y -= 100
             elif keys[pygame.K_DOWN]:
                 self.ball.vertical_motion = "down"
-                self.ball.y += 50
+                self.ball.y += 100
 
         elif not self.p1.hasTheBall() and not self.p2.hasTheBall() and self.ball.speed > 0:
             self.ball.rebound()
@@ -163,8 +162,10 @@ class Game:
                 self.ball.y -= self.ball.speed
             elif self.ball.vertical_motion == "down":
                 self.ball.y += self.ball.speed
-            self.ball.speed *= .95
-            #self.ball_owner = 0
+            if self.ball.speed < 1:
+                self.ball.speed = 0
+            else:
+                self.ball.speed *= .95
 
             goal = self.ball.validate_goal()
             if goal != "":

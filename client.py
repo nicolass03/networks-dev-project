@@ -110,7 +110,6 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time, p):
         grPl2.draw(win)
         grBa.draw(win)
 
-
         game.give_ball_nr(game.ball_owner)
 
         if pygame.sprite.collide_mask(grPl1, grPl2) and (
