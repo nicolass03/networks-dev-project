@@ -110,15 +110,15 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time, p):
         grPl2.draw(win)
         grBa.draw(win)
 
-        game.give_ball_nr(game.ball_owner)
+        #game.give_ball_nr(game.ball_owner)
 
         if pygame.sprite.collide_mask(grPl1, grPl2) and (
-                game.getPlayer1().hasTheBall() or game.getPlayer2().hasTheBall()):
+                game.ball_owner > 0):
             new_owner = game.steal_ball()
-        elif pygame.sprite.collide_mask(grPl1, grBa) and game.ball_owner == 0:
+        elif pygame.sprite.collide_mask(grPl1, grBa) and (game.ball_owner == 0 or game.ball.speed > 0):
             game.give_ball(game.getPlayer1())
             new_owner = True
-        elif pygame.sprite.collide_mask(grPl2, grBa) and game.ball_owner == 0:
+        elif pygame.sprite.collide_mask(grPl2, grBa) and (game.ball_owner == 0 or game.ball.speed > 0):
             game.give_ball(game.getPlayer2())
             new_owner = True
 
@@ -155,7 +155,7 @@ def main():
     n = ClientHandler()
     p = n.getP()
     minutes = 0
-    seconds = 60
+    seconds = 600
     dt = 0
     start_timer = False
     ended = False
@@ -172,7 +172,7 @@ def main():
         gb = None
         try:
             if game:
-                if game.getPlayer(p.number).hasTheBall() or game.ballIsRolling():
+                if game.ball_owner == p.number or game.ballIsRolling():
                     game = n.send((p, game.ball, game.ball_owner, new_owner))
                 else:
                     if p.goals != game.getPlayer(p.number).getGoals():
@@ -203,7 +203,7 @@ def main():
                         ended = True
                         break
                     else:
-                        seconds = 60
+                        seconds = 600
                         minutes -= 0
                         period = "2nd Half"
                         game.reset_positions()
@@ -212,7 +212,7 @@ def main():
                 p.move()
             new_owner = False
             new_owner = redrawWindow(win, game, gp1, gp2, gb, (minutes, seconds), p)
-            dt = clock.tick(60) / 1000
+            dt = clock.tick(600) / 1000
 
         except Exception as e:
             print(e)

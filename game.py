@@ -80,7 +80,7 @@ class Game:
         player.setBall(False)
 
     def ballValidation(self):
-        if self.p1.hasTheBall():
+        if self.ball_owner == 1 and self.ball.speed == 0:
             if self.p1.is_moving_down():
                 self.ball.y = self.p1.y #+ self.p1.height
                 self.ball.x = self.p1.x# + int(self.p1.width/2)
@@ -94,7 +94,7 @@ class Game:
                 self.ball.y = self.p1.y #+ int(self.p1.height/2)
                 self.ball.x = self.p1.x #+ self.p1.width
 
-        elif self.p2.hasTheBall():
+        elif self.ball_owner == 2 and self.ball.speed == 0:
             if self.p2.is_moving_down():
                 self.ball.y = self.p2.y #+ self.p2.height
                 self.ball.x = self.p2.x #+ int(self.p2.width / 2)
@@ -115,12 +115,12 @@ class Game:
 
         if keys[pygame.K_SPACE]:
             print("space pressed")
-            if self.p1.hasTheBall():
+            if self.ball_owner == 1:
                 self.quit_ball(self.p1)
                 self.give_ball(self.p2)
                 self.ball_owner = self.p2.number
                 return True
-            elif self.p2.hasTheBall():
+            elif self.ball_owner == 2:
                 self.quit_ball(self.p2)
                 self.give_ball(self.p1)
                 self.ball_owner = self.p1.number
@@ -151,8 +151,9 @@ class Game:
             elif keys[pygame.K_DOWN]:
                 self.ball.vertical_motion = "down"
                 self.ball.y += 100
+            #self.ball_owner = 0
 
-        elif not self.p1.hasTheBall() and not self.p2.hasTheBall() and self.ball.speed > 0:
+        elif self.ball.speed > 0:
             self.ball.rebound()
             if self.ball.horizontal_motion == "left":
                 self.ball.x -= self.ball.speed
@@ -162,7 +163,7 @@ class Game:
                 self.ball.y -= self.ball.speed
             elif self.ball.vertical_motion == "down":
                 self.ball.y += self.ball.speed
-            if self.ball.speed < 1:
+            if self.ball.speed < 1.0:
                 self.ball.speed = 0
             else:
                 self.ball.speed *= .95
