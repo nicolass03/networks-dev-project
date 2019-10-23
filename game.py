@@ -133,25 +133,27 @@ class Game:
         Possible rebounds are handled
         """
 
+        new_owner = False
         keys = pygame.key.get_pressed()
         goal = ""
         if keys[pygame.K_z] and self.ball.speed == 0:
+            new_owner = True
+            self.ball_owner = 0
             self.ball.horizontal_motion = ""
             self.ball.vertical_motion = ""
             self.ball.speed = 15
             if keys[pygame.K_LEFT]:
                 self.ball.horizontal_motion = "left"
-                self.ball.x -= 100
+                self.ball.x -= 70
             elif keys[pygame.K_RIGHT]:
                 self.ball.horizontal_motion = "right"
-                self.ball.x += 100
+                self.ball.x += 50
             if keys[pygame.K_UP]:
                 self.ball.vertical_motion = "up"
-                self.ball.y -= 100
+                self.ball.y -= 70
             elif keys[pygame.K_DOWN]:
                 self.ball.vertical_motion = "down"
-                self.ball.y += 100
-            #self.ball_owner = 0
+                self.ball.y += 50
 
         elif self.ball.speed > 0:
             self.ball.rebound()
@@ -170,6 +172,7 @@ class Game:
 
             goal = self.ball.validate_goal()
             if goal != "":
+                #self.ball_owner = 0
                 self.ball.quit_motions()
                 if goal == "home":
                     self.add_goal(self.p1, "")
@@ -177,6 +180,7 @@ class Game:
                     self.add_goal(self.p2, "")
 
         self.ball.update()
+        return new_owner
 
     def getPlayer1(self):
         return self.p1
@@ -216,5 +220,6 @@ class Game:
             #self.score[1] += 1
         player.goals+=1
         self.reset_positions()
+        self.ball_owner = 0
         #self.score_record.add((player, time))
 

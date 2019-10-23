@@ -123,7 +123,8 @@ def redrawWindow(window, game, grPl1, grPl2, grBa,time, p):
             new_owner = True
 
         game.ballValidation()
-        game.shoot()
+        if game.shoot():
+            new_owner = True
         #game.move(window)
     pygame.display.update()
     return new_owner
@@ -159,7 +160,6 @@ def main():
     dt = 0
     start_timer = False
     ended = False
-
     clock = pygame.time.Clock()
     game = None
 
@@ -173,11 +173,12 @@ def main():
         try:
             if game:
                 if game.ball_owner == p.number or game.ballIsRolling():
+                    p.goals = game.getPlayer(p.number).getGoals()
                     game = n.send((p, game.ball, game.ball_owner, new_owner))
                 else:
                     if p.goals != game.getPlayer(p.number).getGoals():
                         p.goals = game.getPlayer(p.number).getGoals()
-                        game = n.send((p, game.ball))
+                        game = n.send((p, game.ball, game.ball_owner, True))
                     else:
                         p.goals = game.getPlayer(p.number).getGoals()
                         game = n.send(p)

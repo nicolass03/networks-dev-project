@@ -40,7 +40,7 @@ class Ball:
 
     def validate_goal(self):
         goal = ""
-        if self.x > self.display_width - 10 and self.y > ((self.display_height / 2) - 50) and self.y < ((self.display_height / 2) + 50):
+        if self.x > self.display_width - 20 and self.y > ((self.display_height / 2) - 50) and self.y < ((self.display_height / 2) + 50):
             goal = "home"
         if self.x <= 0 + 5 and self.y > ((self.display_height / 2) - 50) and self.y < ((self.display_height / 2) + 50):
             goal = "away"

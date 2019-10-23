@@ -64,6 +64,7 @@ def threaded_client(conn, player, gameId, ip, idCounter):
                             current_game.setBall(data[1])
                         elif data[3] is True:
                             current_game.ball_owner = data[2]
+                            current_game.setBall(data[1])
 
                     #print("Received: ", data)
                     #print("Sending : ", current_game)
