@@ -1,7 +1,9 @@
 import pygame
 from client_handler import ClientHandler
 from player import Player
+from udp_client import UDP_Client as udpc
 import time
+import threading
 
 class GrahicsPlayer(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -151,9 +153,18 @@ def show_summary(g):
 
 global ended
 
+
 def main():
     run = True
     n = ClientHandler()
+
+    ad = udpc()
+    t = threading.Thread(
+        target=ad.start_video,
+        args=()
+    )
+    t.start()
+
     p = n.getP()
     minutes = 0
     seconds = 60

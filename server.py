@@ -4,6 +4,7 @@ from _thread import *
 from game import Game
 from player import Player
 from ball import Ball
+from udp_server import UDP_Server as userv
 from client_handler import ClientHandler
 import pickle
 import sys
@@ -12,6 +13,12 @@ server = "localhost"
 port = 5556
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+udp = userv((server, port+1))
+udp_thread = threading.Thread(
+                target=udp.start_video_sender,
+                args=()
+            )
+udp_thread.start()
 
 try:
     s.bind((server, port))
@@ -79,7 +86,7 @@ def threaded_client(conn, player, gameId, ip, idCounter):
 while True:
     conn, addr = s.accept()
     print("[+] Connected to:", addr)
-
+    #udp.start_video_sender(addr)
     idCounter += 1
     gameId = (idCounter - 1) // 2
     ball = Ball(330, 220, 20, (0, 0, 255), 490, 670)
