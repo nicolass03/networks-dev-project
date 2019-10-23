@@ -156,7 +156,7 @@ def main():
     n = ClientHandler()
     p = n.getP()
     minutes = 0
-    seconds = 600
+    seconds = 60
     dt = 0
     start_timer = False
     ended = False
@@ -204,7 +204,7 @@ def main():
                         ended = True
                         break
                     else:
-                        seconds = 600
+                        seconds = 60
                         minutes -= 0
                         period = "2nd Half"
                         game.reset_positions()
@@ -213,7 +213,7 @@ def main():
                 p.move()
             new_owner = False
             new_owner = redrawWindow(win, game, gp1, gp2, gb, (minutes, seconds), p)
-            dt = clock.tick(600) / 1000
+            dt = clock.tick(60) / 1000
 
         except Exception as e:
             print(e)
