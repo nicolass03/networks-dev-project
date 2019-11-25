@@ -150,13 +150,13 @@ global ended
 def main():
     run = True
     n = ClientHandler()
-
+    """
     ad = udpc()
     t = threading.Thread(
         target=ad.start_video,
         args=()
     )
-    t.start()
+    t.start()"""
 
     p = n.getP()
     minutes = 0

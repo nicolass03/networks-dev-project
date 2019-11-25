@@ -20,7 +20,7 @@ class UDP_Client():
 
     def start_video(self):
         #cv2.startWindowThread()
-        self.s.sendto(bytes("conn", "utf-8"), (self.ip,self.port))
+        self.s.sendto(bytes("conn", "utf-8"), (self.ip, self.port))
         try:
             while True:
                 data, client = self.s.recvfrom(2**16)
