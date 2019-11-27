@@ -9,9 +9,10 @@ from client_handler import ClientHandler
 import pickle
 import sys
 import os
+import time
 
 class Server():
-    def __init__(self):
+    def __init__(self, backed):
         self.server = "localhost"
         self.port = 25555
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,6 +39,28 @@ class Server():
         self.games = {}
         self.threads = []
         self.idCounter = 0
+
+        backup_thread = threading.Thread(
+                            target=self.write_backup,
+                            args=()
+                        )
+        backup_thread.start()
+
+        if backed == 1:
+            print("[+SERVER] Server reconnecting with clients...")
+
+    def write_backup(self):
+        while True:
+            time.sleep(20)
+            try:
+                os.remove("backups/"+str(self.server)+"_"+str(self.port)+".bck")
+            except:
+                pass
+            with open("backups/"+str(self.server)+"_"+str(self.port)+".bck", "wb+") as file:
+                server_data = (self.connected, self.games, self.idCounter, self.full_capacity)
+                pickle.dump(server_data, file, pickle.HIGHEST_PROTOCOL)
+                print("[+ SERVER] Backup saved!")
+            file.close()
 
     def threaded_client(self,conn, player, gameId, ip, idCounter):
 
@@ -111,7 +134,7 @@ class Server():
                             args=(conn, player, key, addr[0], self.idCounter)
 
                         )
-                        self.connected.append(addr[0])
+                        self.connected.append((key,addr[0]))
                         print("[+ SERVER] Saved " + addr[0] + " with gameId: " + str(key))
                         client_thread.start()
                         self.threads.append(client_thread)
@@ -131,7 +154,7 @@ class Server():
                             args=(conn, player, gameId, addr[0], self.idCounter)
 
                         )
-                        self.connected.append(addr[0])
+                        self.connected.append((gameId,addr[0]))
                         print("[+ SERVER] Saved " + addr[0] + " with gameId: " + str(gameId))
                         client_thread.start()
                         self.threads.append(client_thread)
@@ -149,7 +172,7 @@ class Server():
                             args=(conn, player, gameId, addr[0], self.idCounter)
 
                         )
-                        self.connected.append(addr[0])
+                        self.connected.append((gameId,addr[0]))
                         print("[+ SERVER] Saved " + addr[0] + " with gameId: " + str(gameId))
                         client_thread.start()
                         self.threads.append(client_thread)
